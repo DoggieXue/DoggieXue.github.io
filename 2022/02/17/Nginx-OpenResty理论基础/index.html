@@ -1,0 +1,593 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Cloud Xue">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Nginx是一个高性能的HTTP和反向代理服务器，生产场景中几乎都会用到，利用Nginx+Lua可以实现高并发编程。Nginx有以下三个社区分支：● Nginx官方：更新迭代快，提供免费版和商业版。● Tengine：是由淘宝网发起的Web服务器项目。在Nginx的基础上针对大访问量网站的需求添加了很多高级的特性和功能。● OpenResty：将LuaJIT VM 嵌入Nginx中，实现了Open">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx&#x2F;OpenResty理论基础">
+<meta property="og:url" content="http://example.com/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Doggie&#39; Blog">
+<meta property="og:description" content="Nginx是一个高性能的HTTP和反向代理服务器，生产场景中几乎都会用到，利用Nginx+Lua可以实现高并发编程。Nginx有以下三个社区分支：● Nginx官方：更新迭代快，提供免费版和商业版。● Tengine：是由淘宝网发起的Web服务器项目。在Nginx的基础上针对大访问量网站的需求添加了很多高级的特性和功能。● OpenResty：将LuaJIT VM 嵌入Nginx中，实现了Open">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/1645099365279-7c2cbd04-5290-4eae-bd13-41dbd1824650.png">
+<meta property="og:image" content="http://example.com/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/1645099413705-712ae104-c6c4-4715-acd3-1efebbad69df.png">
+<meta property="og:image" content="http://example.com/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/1645100303761-ebe6a415-a624-4a6c-bd49-5f67ce5e4915.png">
+<meta property="og:image" content="http://example.com/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/1645100554585-c8477054-2a67-4405-a2d2-b49f84dbd1d5.png">
+<meta property="og:image" content="http://example.com/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/c063ac3fcb254d778b847ac771a7dfe6.jpeg">
+<meta property="article:published_time" content="2022-02-17T13:43:16.000Z">
+<meta property="article:modified_time" content="2022-03-17T12:23:12.191Z">
+<meta property="article:author" content="Cloud Xue">
+<meta property="article:tag" content="Nginx&#x2F;OpenResty">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/1645099365279-7c2cbd04-5290-4eae-bd13-41dbd1824650.png">
+  
+  
+  <title>Nginx/OpenResty理论基础 - Doggie&#39; Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"uV1DqTVgOHpeh50rftSyg4NR-gzGzoHsz","app_key":"0FhpBTmkC3B0LaUFCRJrlk0H","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Doggie&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Nginx/OpenResty理论基础">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-02-17 21:43" pubdate>
+        2022年2月17日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      36 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Nginx/OpenResty理论基础</h1>
+            
+            <div class="markdown-body">
+              <p>Nginx是一个高性能的HTTP和反向代理服务器，生产场景中几乎都会用到，利用Nginx+Lua可以实现高并发编程。<br>Nginx有以下三个社区分支：<br>● Nginx官方：更新迭代快，提供免费版和商业版。<br>● Tengine：是由淘宝网发起的Web服务器项目。在Nginx的基础上针对大访问量网站的需求添加了很多高级的特性和功能。<br>● OpenResty：将LuaJIT VM 嵌入Nginx中，实现了OpenResty这个高性能服务端解决方案。OpenResty是一个基于Nginx和Lua的高性能Web平台，其内部集成了大量精良的Lua库，第三方模块以及大多数的依赖项，用于方便地搭建能够处理超高并发、扩展性极高的动态Web应用、Web服务和动态网关。</p>
+<p>OpenResty的目标是让Web服务直接跑在Nginx服务内部，充分利用Nginx的非阻塞I&#x2F;O模型，不仅对HTTP客户端请求，甚至对远程后端（MySQL、PostgreSQL、memcached及Redis）都进行一致的高性能响应。<br>OpenResty通过汇聚各种设计精良的Nginx模块，从而将Nginx有效地变成了强大的通用Web应用平台，使得Web开发工程师和系统开发工程师可以使用Lua脚本语言调用Nginx支持的各种C及Lua模块，快速构造出足以胜任10KB乃至1000KB以上单机并发连接的高性能Web应用系统。</p>
+<h1 id="正向代理与反向代理"><a href="#正向代理与反向代理" class="headerlink" title="正向代理与反向代理"></a>正向代理与反向代理</h1><p>两者都是代理服务中，进行客户端请求的转发</p>
+<h2 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h2><p>客户端非常明确要访问的服务器地址，客户端需要配置目标服务器的IP和端口信息。一般来说，正向代理服务器是一台和客户端网络连通的局域网内部的机器或者是可以打通两个隔离网络的双网卡机器。通过正向代理，客户端的HTTP请求可以转发到之前与客户端网络不通的其他不同的目标服务器。<br>正向代理的主要场景是客户端。由于网络不通等物理原因，需要通过正向代理服务器这种中间转发环节顺利访问目标服务器，也可以通过正向代理服务器对客户端某些信息进行一些伪装和改变。</p>
+<img src="/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/1645099365279-7c2cbd04-5290-4eae-bd13-41dbd1824650.png" srcset="/img/loading.gif" lazyload class="">
+<h2 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h2><p>客户端不知道目标服务器的信息，代理服务器就像是原始的目标服务器，客户端不需要进行任何特别的设置。反向代理最大的特点是客户端不知道目标服务器地址。<br>反向代理的主要场景是服务端。服务提供方可以通过反向代理服务器轻松实现目标服务器的动态切换，实现多目标服务器的负载均衡等。</p>
+<img src="/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/1645099413705-712ae104-c6c4-4715-acd3-1efebbad69df.png" srcset="/img/loading.gif" lazyload class="">
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>正向代理（如Squid、Proxy）是对客户端的伪装，隐藏了客户端的IP、头部或者其他信息，服务器得到的伪装过的客户端信息；<br>反向代理（如Nginx、Apache）是对目标服务器的伪装，隐藏了目标服务器的IP、头部或者其他信息，客户端得到的是伪装过的目标服务器信息。</p>
+<h1 id="Nginx核心原理"><a href="#Nginx核心原理" class="headerlink" title="Nginx核心原理"></a>Nginx核心原理</h1><p>Nginx的核心原理包括Reactor模型、Nginx的模块化设计、Nginx的请求处理阶段。</p>
+<h2 id="Reactor模型"><a href="#Reactor模型" class="headerlink" title="Reactor模型"></a>Reactor模型</h2><p>Nginx对高并发IO的处理使用了Reactor事件驱动模型。该模型的基本组件有<br>● 事件收集器：负责收集worker进程的各种I&#x2F;O请求。<br>● 事件发送器：负责将IO事件发送到事件处理器。<br>● 事件处理器：负责各种事件的响应工作。</p>
+<p><strong>Reactor模型的核心思想是</strong>：基于操作系统提供的多路I&#x2F;O复用技术，将所有要处理的I&#x2F;O事件注册到一个中心I&#x2F;O多路复用器上，同时主线程阻塞在多路复用器上，一旦有I&#x2F;O事件到来或者准备就绪(文件描述符或Socket可读、写)，多路复用器返回并将事先注册的相应I&#x2F;O事件分发到对应的处理器中。</p>
+<h2 id="Nginx的两类进程"><a href="#Nginx的两类进程" class="headerlink" title="Nginx的两类进程"></a>Nginx的两类进程</h2><p>Nginx启动后会以daemon方式在后台运行，其后台有两类进程：<br>● <strong>Master</strong>进程：又叫管理者进程。主要负责调度Worker工作进程，比如加载配置文件、启动工作进程、接收来自外界的信号、向各Worker进程发送信号、监控Worker进程的运行状态等。同时负责创建监听套接字接口，交由Worker进程进行监听。<br>● <strong>Worker</strong>进程：又叫工作进程。主要用来处理网络事件，当一个Worker进程在接收一个连接通道后，就开始读取请求、解析请求、处理请求，处理完成产生数据后，再返回给客户端，最后断开连接通道。各Worker进程之间是对等且独立的，它们同等竞争来自客户端的请求，一个请求只能在一个Worker进程中处理。</p>
+<h2 id="Nginx的模块化设计"><a href="#Nginx的模块化设计" class="headerlink" title="Nginx的模块化设计"></a>Nginx的模块化设计</h2><p>高度模块化的设计是Nginx的架构基础。各模块之间严格遵循“高内聚、低耦合”的原则。在Nginx实现中，一个模块包含一系列命令（cmd）和这些命令相对应的处理函数（cmd-&gt;handler）。Nginx的Worker进程在执行过程中会通过配置文件的配置指令定位到对应的功能模块的某个命令，然后调用命令对应的处理函数来完成相应的处理。<br>Nginx的模块结构图：</p>
+<img src="/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/1645100303761-ebe6a415-a624-4a6c-bd49-5f67ce5e4915.png" srcset="/img/loading.gif" lazyload class="">
+<p>Nginx的主要模块说明：<br>● Core核心模块：是Nginx服务器正常运行必不可少的模块，提供错误日志记录、配置文件解析、Reactor事件驱动机制、进程管理等核心功能。<br>● 标准HTTP模块：主要提供HTTP协议解析相关的功能，比如端口配置、网页编码设置、HTTP响应头设置等。<br>● 可选HTTP模块：主要用于扩展标准的HTTP功能，让Nginx能处理一些特殊的服务，如Flash多媒体传输、网络传输压缩、安全协议SSL的支持。<br>● 邮件服务模块：主要用于支持Nginx的邮件服务，包括对POP3协议、IMAP协议和SMTP协议的支持。<br>● 第三方模块：为了扩展Nginx服务器功能，定制开发的，如JSON支持、Lua支持。</p>
+<h2 id="Nginx配置文件上下文结构"><a href="#Nginx配置文件上下文结构" class="headerlink" title="Nginx配置文件上下文结构"></a>Nginx配置文件上下文结构</h2><p>Nginx配置文件包含若干配置项，每个配置项由配置指令和指令参数两部分组成。<br>Nginx的配置项的具体功能与其所处的作用域（上下文、配置块）是强相关的。Nginx指令的作用域配置块大致分为5种，其层次关系如图：</p>
+<img src="/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/1645100554585-c8477054-2a67-4405-a2d2-b49f84dbd1d5.png" srcset="/img/loading.gif" lazyload class="">
+<p>一个标准的Nginx基本配置文件nginx.conf上下文结构如下：</p>
+<div class="code-wrapper"><pre><code class="hljs">... #main全局配置快，可配置工作进程数
+
+events &#123; #事件处理模型配置块，例如IO读写模型、连接数等
+    ...  
+&#125;
+
+http &#123; #http协议配置块
+    ... #http协议的全局配置快
+server &#123; #虚拟服务配置块1
+    
+    location [PATTERN] &#123; #路由规则配置快1
+        ...
+    &#125;
+    
+    location [PATTERN] &#123; #路由规则配置快2
+        ...
+    &#125;
+&#125;
+
+server &#123; #虚拟服务配置块2
+    ...
+&#125;
+... #其他http协议的全局配置
+&#125;
+
+main &#123;    #mail服务配置块
+    ...     #email相关协议，如SMTP、IMAP、POP3等
+&#125;
+</code></pre></div>
+<p>除了基本配置文件外，Nginx还有如下配置文件：<br>● mime.type：与MIME类型相关的配置文件<br>● fastcgi.conf：与FastCGI相关的配置文件。<br>● proxy.conf：与Proxy相关的配置文件。<br>● sites.conf：单独配置Nginx的提供的虚拟主机。</p>
+<h2 id="Nginx的请求处理流程"><a href="#Nginx的请求处理流程" class="headerlink" title="Nginx的请求处理流程"></a>Nginx的请求处理流程</h2><p>Nginx中HTTP请求的处理流程可以分为4步：</p>
+<ol>
+<li>读取解析请求行；</li>
+<li>读取解析请求头；</li>
+<li>多阶段处理，即执行handle处理器列表；</li>
+<li>将结果返回给客户端<br>Nginx把HTTP请求处理划分成了11个阶段，在完成前两步处理后，Nginx将整个请求封装到一个请求结构体ngx_http_request_t实例中，该实例相当于一个Java对象，然后进入多阶段处理，执行handler处理器列表，列表中的每个handler处理器都会对请求对象进行处理，类似于Netty中的PipeLine。</li>
+</ol>
+<p>在Nginx进行多阶段处理时，handler处理器的执行次序除了和配置文件中对应指令的配置顺序相关外，还和指令所处的阶段先后次序相关。如下如展示了多阶段处理的顺序：</p>
+<img src="/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/c063ac3fcb254d778b847ac771a7dfe6.jpeg" srcset="/img/loading.gif" lazyload class="">
+<h2 id="HTTP请求处理的11个阶段"><a href="#HTTP请求处理的11个阶段" class="headerlink" title="HTTP请求处理的11个阶段"></a>HTTP请求处理的11个阶段</h2><ol>
+<li>post-read阶段：标准模块的ngx_realip处理器就注册在该阶段。改写请求的来源地址，将客户端真实IP附加上，便于后端获取。</li>
+<li>server-rewrite阶段：server块中请求地址重写阶段。</li>
+<li>find-config阶段：配置查找阶段，根据请求URL地址去匹配location路由表达式。不支持Nginx模块注册处理程序。</li>
+<li>rewrite阶段：请求地址重写阶段，此时，location配置块中的指令开始起作用，如breaker、if、return、rewrite、set等，三方库ngx_lua模块中的set_by_lua、rewrite_by_lua指令也注册在此阶段.</li>
+<li>post-rewrite阶段：请求地址URI重写后提交阶段，防止递归修改URI造成死循环。不支持Nginx模块注册处理程序。</li>
+<li>preaccess阶段：访问权限检查准备阶段。</li>
+<li>access阶段：访问权限检查阶段。注册在该阶段的指令有ngx_http_access_module模块的指令、三方ngx_auth_request模块的指令、ngx_lua模块的指令。特别提醒：echo指令用于返回内容，在location上下文中，该指令注册在content阶段，access阶段不执行该指令的配置项。</li>
+<li>post-access阶段：访问权限检查提交阶段。如果请求不被允许访问Nginx服务器，该阶段负责向用户返回错误响应。不支持Nginx模块注册处理程序。在access阶段可能存在多个访问控制模块的指令注册，该阶段    的satisfy指令可以用于控制它们的协作方式：<br>  a. 逻辑或操作：satisfy any。表示访问控制模块A、B、C或更多，只要其中任意一个通过就算通过。<br>  b. 逻辑与操作：satisfy all。表示访问控制模块A、B、C或更多，全部通过才算通过。</li>
+<li>try-files阶段：可以使请求按顺序访问多个静态文件资源，直到某个静态文件资源符合条件。不支持Nginx模块注册处理程序。</li>
+<li>content阶段：内容产生阶段，大部分HTTP模块会介入。Nginx的echo、ngx_lua中的content_by_lua指令就注册在该阶段</li>
+<li>log阶段：日志记录模块。</li>
+</ol>
+<p>Nginx将一个HTTP请求分为11个处理阶段，这样做让每个HTTP模块可以只专注于完成一个独立、简单的功能。而一个请求的完整处理过程由多个HTTP模块共同完成，可以极大地提高多个模块合作的协同性、可测试性和可扩展性。<br>同一个阶段内的指令，Nginx会按照各个指令的上下文顺序执行对应的handle处理器方法。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Nginx/">Nginx</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Nginx-OpenResty/">Nginx/OpenResty</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/17/Mac%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85OpenResty%E5%8F%8A%E4%BD%BF%E7%94%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Mac系统安装OpenResty及使用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/12/31/%E4%BD%BF%E7%94%A8%E9%9D%9Eroot%E7%94%A8%E6%88%B7%E5%81%9C%E6%AD%A2%E5%92%8C%E5%90%AF%E5%8A%A8Apache%E3%80%81Nginx%E7%9A%84%E6%96%B9%E6%B3%95/">
+                        <span class="hidden-mobile">使用非root用户停止和启动Apache、Nginx的方法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"uV1DqTVgOHpeh50rftSyg4NR-gzGzoHsz","appKey":"0FhpBTmkC3B0LaUFCRJrlk0H","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          Fluid.plugins.initFancyBox('#valine .vcontent img:not(.vemoji)');
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
