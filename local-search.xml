@@ -4,6 +4,45 @@
   
   
   <entry>
+    <title>SpringBoot集成WebSocket示例</title>
+    <link href="/2022/03/20/SpringBoot%E9%9B%86%E6%88%90WebSocket%E7%A4%BA%E4%BE%8B/"/>
+    <url>/2022/03/20/SpringBoot%E9%9B%86%E6%88%90WebSocket%E7%A4%BA%E4%BE%8B/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>SpringBoot应用启动流程源码分析</title>
+    <link href="/2022/03/20/SpringBoot%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"/>
+    <url>/2022/03/20/SpringBoot%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>SpringBootApplication注解深度解析</title>
+    <link href="/2022/03/20/SpringBootApplication%E6%B3%A8%E8%A7%A3%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/"/>
+    <url>/2022/03/20/SpringBootApplication%E6%B3%A8%E8%A7%A3%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Mac系统安装OpenResty及使用</title>
     <link href="/2022/03/17/Mac%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85OpenResty%E5%8F%8A%E4%BD%BF%E7%94%A8/"/>
     <url>/2022/03/17/Mac%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85OpenResty%E5%8F%8A%E4%BD%BF%E7%94%A8/</url>
@@ -67,6 +106,25 @@
   
   
   <entry>
+    <title>SpringBoot对SpringMVC的整合原理</title>
+    <link href="/2020/01/26/SpringBoot%E5%AF%B9SpringMVC%E7%9A%84%E6%95%B4%E5%90%88%E5%8E%9F%E7%90%86/"/>
+    <url>/2020/01/26/SpringBoot%E5%AF%B9SpringMVC%E7%9A%84%E6%95%B4%E5%90%88%E5%8E%9F%E7%90%86/</url>
+    
+    <content type="html"><![CDATA[<p>传统的Java Web项目通常要有部署描述符(web.xml)，在部署描述符中定义我们需要的Servlet、Filter、Listener，且部署描述符必须位于WEB-INF&#x2F;目录下。其实，这都是Servlet3.0以前的版本（Servlet2.5）的规范所要求的。随着Servlet3.0规范对注解的使用，web.xml配置文件被代替，SpringBoot框架就是以Servlet 3.0规范作为支撑，消除了对web.xml的使用。</p><h1 id="操作机制"><a href="#操作机制" class="headerlink" title="操作机制"></a>操作机制</h1><p>Servlet 3.0的<code>ServletContainerInitializer</code>被设计成支持基于代码的servlet容器配置。SpringBoot框架中提供了<code>SpringServletContainerInitializer</code>类来实现<code>ServletContainerInitializer</code>接口，同时使用Spring的<code>WebApplicationInitializer</code> SPI来消除web.xml或者同web.xml搭配使用。</p><h2 id="单独使用时："><a href="#单独使用时：" class="headerlink" title="单独使用时："></a>单独使用时：</h2><p><code>SpringServletContainerInitializer</code>类会被加载和实例化，且其onStart方法会被任何兼容Servlet 3.0的容器在容器启动时调用，前提是spring-web模块jar包在当前servlet容器的类路径中。这一切通过Jar Service API的<code>ServiceLoader.load(Class)</code>方法，寻找<code>spring-web</code>模块中<code>META-INF/services/javax.servlet.ServletContainerInitializer</code>服务提供配置文件来实现的。</p><h2 id="与web-xml搭配使用时："><a href="#与web-xml搭配使用时：" class="headerlink" title="与web.xml搭配使用时："></a>与web.xml搭配使用时：</h2><p>web应用可以在启动时选择限制类路径中扫描servlet容器的数量；或者<br>通过web.xml中<code>metadata-complete</code>属性来控制servlet注解的扫描；或者<br>通过web.xml中<code>&lt;absolute-ordering&gt;</code>元素来控制web片段执行SCI扫描</p><h1 id="SpringServletContainerInitializer与WebApplicationInitializer之间的关系"><a href="#SpringServletContainerInitializer与WebApplicationInitializer之间的关系" class="headerlink" title="SpringServletContainerInitializer与WebApplicationInitializer之间的关系"></a>SpringServletContainerInitializer与WebApplicationInitializer之间的关系</h1><p>Spring的<code>WebApplicationInitializer SPI</code>仅有一个方法：<code>WebApplicationInitializer.onStart(ServletContext)</code>。该方法签名有意的类似<code>ServletContainerInitializer.onStart(Set, ServletContext)</code>方法。简单来说，<code>SpringServletContainerInitializer</code>负责实例化，并且将<code>ServletContext</code>委托给任何用户定义的<code>WebApplicationInitializer</code>实现。接下来每一个<code>WebApplicationInitializer</code>(实现)负责实例化实际的<code>ServletContext</code>。因为<code>SpringServletContainerInitializer</code>声明了<br><code>@HandleType(WebApplicationInitializer.class)</code>，<br>Servlet 3.0+的容器将会自动地扫描类路径中对<code>Spring的WebApplicationInitializer</code>接口的实现类，并将所有实现类的class对象(<code>webAppInitializerClasses</code>)组成的集合作为<code>onStart</code>方法的第一个参数。若在类路径中未找到<code>WebApplicationInitializer</code>的实现类，onStart方法不会做任何操作。一条INFO级别的日志信息将会被打印出来通知用户：<code>ServletContainerInitializer</code>已经被调用了，但是未找到<code>WebApplicationInitializer</code>实现。</p><div class="code-wrapper"><pre><code class="hljs">if (initializers.isEmpty()) &#123;    servletContext.log(&quot;No Spring WebApplicationInitializer types detected on classpath&quot;);    return;&#125;</code></pre></div><p>假设在类路径中发现了一个或多个<code>WebApplicationInitializer</code>类型的实现类，接下来他们会被实例化（如果被<code>@Order</code>注解定义，则会按照顺序实例化）。然后<code>WebApplicationInitializer.onStart(ServletContext)</code>方法将会在每一个实例上被调用。委托<code>ServletContext</code>给每一个实例，，注册并配置<code>servlet</code>（例如Spring的<code>DispatcherServlet</code>），<code>listener</code>(例如Spring的<code>ContextLoaderListener</code>)，或者任何其他<code>Servlet API</code> 组件，比如说<code>filter</code>。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Spring Boot</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>使用非root用户停止和启动Apache、Nginx的方法</title>
     <link href="/2019/12/31/%E4%BD%BF%E7%94%A8%E9%9D%9Eroot%E7%94%A8%E6%88%B7%E5%81%9C%E6%AD%A2%E5%92%8C%E5%90%AF%E5%8A%A8Apache%E3%80%81Nginx%E7%9A%84%E6%96%B9%E6%B3%95/"/>
     <url>/2019/12/31/%E4%BD%BF%E7%94%A8%E9%9D%9Eroot%E7%94%A8%E6%88%B7%E5%81%9C%E6%AD%A2%E5%92%8C%E5%90%AF%E5%8A%A8Apache%E3%80%81Nginx%E7%9A%84%E6%96%B9%E6%B3%95/</url>
@@ -88,6 +146,25 @@
     <tags>
       
       <tag>Nginx/OpenResty</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>SpringBoot可运行jar启动过程分析</title>
+    <link href="/2019/12/18/SpringBoot%E5%8F%AF%E8%BF%90%E8%A1%8Cjar%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/"/>
+    <url>/2019/12/18/SpringBoot%E5%8F%AF%E8%BF%90%E8%A1%8Cjar%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/</url>
+    
+    <content type="html"><![CDATA[<p>通过maven或者gradle命令构建出来的可运行jar包解压后，在<code>META-INF/MANIFEST.MF</code>中<code>Main-Class</code>值为<code>org.springframework.boot.loader.JarLauncher</code><br>该类位于与<code>META-INF/</code>同目录的<code>org/springframework/boot/loader</code>目录中。经过对比发下，后者就是<code>spring-boot-loader-version.jar</code>包解压后的全部内容。</p><ul><li>打包可运行jar文件时，不能再jar中嵌套jar文件；</li><li>如果jar文件中嵌套jar文件，则该jar文件称为FatJar，需要自定义加载器才能使该FatJar可运行；</li><li>通过<code>java -jar spring-boot-loader-version.jar</code>命令运行SpringBoot打出的jar包时，根据jar运行机制，运行<code>MANIFEST.MF</code>中定义的<code>Main-Class</code>指定的类中的main方法，该类为<code>org.springframework.boot.loader.JarLauncher</code></li></ul><p>JarLauncher的继承结构如下</p><div class="code-wrapper"><pre><code class="hljs">@startumlabstract class Launcherabstract class ExecutableArchiveLauncherabstract class JarLauncherExecutableArchiveLauncher &lt;|-- JarLauncherLauncher&lt;|-- ExecutableArchiveLauncher@enduml</code></pre></div><p>JarLauncher中的main方法:</p><div class="code-wrapper"><pre><code class="hljs">public static void main(String[] args) throws Exception &#123;    (new JarLauncher()).launch(args);&#125;</code></pre></div><p>创建<code>JarLauncher</code>实例时，自己本身的无参构造方法未做任何事情，会先调用父类的无参构造方法：完成<code>Archive</code>对象的初始化，Archive对象就表示<code>spring-boot-loader-version.jar</code>在硬盘上的绝对物理路径。然后调用<code>Launcher</code>类中的<code>launch(String[] args)</code>方法：</p><div class="code-wrapper"><pre><code class="hljs">protected void launch(String[] args) throws Exception &#123;    JarFile.registerUrlProtocolHandler();    ClassLoader classLoader = createClassLoader(getClassPathArchives());    launch(args, getMainClass(), classLoader);&#125;</code></pre></div><p>该方法完成的主要事情就是：通过</p><div class="code-wrapper"><pre><code class="hljs">ClassLoader classLoader = createClassLoader(getClassPathArchives());</code></pre></div><p>创建自定义加载器<code>LauncherdURLClassLoader</code>,该加载器会将FatJar中<code>BOOT-INF/classes</code>和<code>BOOT-INF/lib</code>目录下的所有文件加载到系统类加载器(应用类加载器)中;</p><p>继续调用重写的launch方法:</p><div class="code-wrapper"><pre><code class="hljs">protected void launch(String[] args, String mainClass, ClassLoader classLoader)            throws Exception &#123;    Thread.currentThread().setContextClassLoader(classLoader);    createMainMethodRunner(mainClass, args, classLoader).run();&#125;</code></pre></div><p>首先通过</p><div class="code-wrapper"><pre><code class="hljs">Thread.currentThread().setContextClassLoader(classLoader);</code></pre></div><p>设置当前线程的上下文类加载器为之前创建的自定义加载器<code>LaunchedURLCLassLoader</code>；<br>然后创建<code>MainMethodRunner</code>实例，指定要运行的<code>mainClassName为MANIFEST.MF</code>中定义的<code>Start-Class</code>属性值，即<code>SpringBoot</code>启动类。<br>最后运行<code>run()</code>方法，使用反射机制运行<code>SpringBoot</code>启动类中的<code>main</code>方法。</p><div class="code-wrapper"><pre><code class="hljs">public void run() throws Exception &#123;    Class&lt;?&gt; mainClass = Thread.currentThread().getContextClassLoader()                .loadClass(this.mainClassName);    Method mainMethod = mainClass.getDeclaredMethod(&quot;main&quot;, String[].class);    mainMethod.invoke(null, new Object[] &#123; this.args &#125;);&#125;</code></pre></div><h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><ul><li>使用gradle或者maven打出来的可运行jar包为一个FatJar；</li><li>FatJar中的启动类为<code>org.springframework.boot.loader.JarLauncher</code>，该类实际位于<code>spring-boot-loader-version.RELEASW.jar</code>辅助jar包中，实际打包成FatJar时，辅助jar包会被解压放到FatJar中，以便遵循jar规范，使其可运行；</li><li>运行<code>org.springframework.boot.loader.JarLauncher</code>中的<code>main</code>方法时，会创建自定义类加载器，加载FatJar中的<code>BOOT-INF/classes/</code>和<code>BOOT-INF/lib/</code>目录下的所有文件加载到系统类加载器(应用类加载器)中;</li><li>通过反射机制运行SpringBoot启动类中的main方法，来实现FatJar的运行。<h2 id="延伸："><a href="#延伸：" class="headerlink" title="延伸："></a>延伸：</h2></li><li>通过反射机制运行SpringBoot中的main方法时，传入的第一个参数是null:<br><code>mainMethod.invoke(null, new Object[] &#123; this.args &#125;);</code><br>这是因为定义的main方法是static的，类中的静态方法不归属于当前类，而是归属于当前类所对应的class对象,所以可以使用null，也可以使用任意对象。</li><li>既然使用的是反射机制来运行SpringBoot中启动类的方法，那么这个方法是否必须是main方法，答案是否定的，如果只是通过<code>java -jar</code>命令这种方式来SpringBoot应用，那么可以指定任意方法。此处默认使用main方法是为了开发时SpringBoot应用可以在IDE中运行。</li></ul>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Spring Boot</tag>
       
     </tags>
     
