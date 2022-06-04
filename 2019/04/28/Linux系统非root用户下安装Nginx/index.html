@@ -24,9 +24,10 @@
 <meta property="og:description" content="通常使用Nginx或者Apache作为Web服务器时，默认监听80端口，因此默认会使用root用户去安装，而且，使用yum命令安装时，通常会安装到默认的路径下，默认路径通常是root用户才有执行权限的。如果不需要使用Nginx监听1024以下的端口，且对权限和网络管理比较严格时，能用非root权限解决的，就用普通用户。在此使用编译Nginx源码的方式安装Nginx。 假设已拿到root用户权限，但">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-04-28T08:31:11.000Z">
-<meta property="article:modified_time" content="2022-03-17T12:45:39.402Z">
+<meta property="article:modified_time" content="2022-06-04T13:11:15.220Z">
 <meta property="article:author" content="Cloud Xue">
 <meta property="article:tag" content="Nginx&#x2F;OpenResty">
+<meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -239,7 +240,7 @@
             
             <div class="markdown-body">
               <p>通常使用Nginx或者Apache作为Web服务器时，默认监听80端口，因此默认会使用root用户去安装，而且，使用yum命令安装时，通常会安装到默认的路径下，默认路径通常是root用户才有执行权限的。如果不需要使用Nginx监听1024以下的端口，且对权限和网络管理比较严格时，能用非root权限解决的，就用普通用户。在此使用编译Nginx源码的方式安装Nginx。 假设已拿到root用户权限，但需要使用普通用户去管理Nginx。</p>
-<h1 id="登录Linux服务器"><a href="#登录Linux服务器" class="headerlink" title="登录Linux服务器"></a>登录Linux服务器</h1><p>root登录服务器<br>    ssh <a href="mailto:&#x72;&#111;&#x6f;&#x74;&#64;&#120;&#46;&#120;&#46;&#120;&#46;&#120;">&#x72;&#111;&#x6f;&#x74;&#64;&#120;&#46;&#120;&#46;&#120;&#46;&#120;</a></p>
+<h1 id="登录Linux服务器"><a href="#登录Linux服务器" class="headerlink" title="登录Linux服务器"></a>登录Linux服务器</h1><p>root登录服务器<br>    ssh <a href="mailto:&#114;&#x6f;&#111;&#x74;&#64;&#120;&#x2e;&#120;&#x2e;&#x78;&#46;&#120;">&#114;&#x6f;&#111;&#x74;&#64;&#120;&#x2e;&#120;&#x2e;&#x78;&#46;&#120;</a></p>
 <h1 id="创建普通用户并设置密码"><a href="#创建普通用户并设置密码" class="headerlink" title="创建普通用户并设置密码"></a>创建普通用户并设置密码</h1><p>创建普通用户</p>
 <div class="code-wrapper"><pre><code class="hljs"># useradd nginx
 </code></pre></div>
@@ -406,6 +407,8 @@ configure arguments: --user=nginx --group=nginx --prefix=/home/nginx/nginx --wit
                     
                       <a class="hover-with-bg" href="/tags/Nginx-OpenResty/">Nginx/OpenResty</a>
                     
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
                   </div>
                 
               </div>
@@ -421,9 +424,9 @@ configure arguments: --user=nginx --group=nginx --prefix=/home/nginx/nginx --wit
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2019/12/18/SpringBoot%E5%8F%AF%E8%BF%90%E8%A1%8Cjar%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/">
+                      <a href="/2019/12/18/SpringBootApplication%E6%B3%A8%E8%A7%A3%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">SpringBoot可运行jar启动过程分析</span>
+                        <span class="hidden-mobile">SpringBootApplication注解深度解析</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
