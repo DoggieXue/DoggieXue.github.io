@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Doggie">
+    
+    <title>
+        
+            Kafka学习第二篇-理论篇 |
+        
+        Keep Moving
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/brands.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en","path":"search.json"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/logo.svg","favicon":"/images/logo.svg","avatar":"/images/avatar.svg","font_size":null,"font_family":"STSong, STHeiti","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":false,"background_img":"/images/bg.svg","description":"请在这里输入你想对全世界每个人要说的话...","font_color":null,"hitokoto":true},"scroll":{"progress_bar":false,"percent":true}},"local_search":{"enable":true,"preload":true},"code_copy":{},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":false},"comment":{"enable":false,"use":"valine","valine":{"appid":"uV1DqTVgOHpeh50rftSyg4NR-gzGzoHsz","appkey":"0FhpBTmkC3B0LaUFCRJrlk0H","server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"version":"3.6.1"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original article title","author":"Original article author","link":"Original article link"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.svg">
+                </a>
+            
+            <a class="logo-title" href="/">
+               Keep Moving
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            <div class="article-title">
+                <span class="title-hover-animation">Kafka学习第二篇-理论篇</span>
+            </div>
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/avatar.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Doggie</span>
+                            
+                                <span class="author-label">Lv4</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            
+<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        
+            <i class="fa-regular fa-calendar-plus"></i>&nbsp;
+        
+        <span class="pc">2020-01-07 09:43:36</span>
+        <span class="mobile">2020-01-07 09:43</span>
+    </span>
+    
+        <span class="article-update-date article-meta-item">
+        <i class="fas fa-file-pen"></i>&nbsp;
+        <span class="pc">2023-02-07 11:08:22</span>
+    </span>
+    
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Kafka/">Kafka</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>2.1k Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>7 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content keep-markdown-body">
+                
+
+                <h1 id="Kafka简介"><a href="#Kafka简介" class="headerlink" title="Kafka简介"></a>Kafka简介</h1><p>Kafka被用于构建实时的数据管道和流式app。它具备水平扩展性、容错性、速度快，且已运行在多家公司的生产环境中。<br>Kafka是一个分布式的流式平台。分布式流式平台具备三个关键能力：</p>
+<ul>
+<li>发布和订阅消息，类似于消息队列或企业消息传输系统</li>
+<li>以容错的持久化方式存储消息</li>
+<li>在消息发生时可以实时处理它们</li>
+</ul>
+<p>Kafka通常用于两大类应用：</p>
+<ul>
+<li>构建实时的流式数据管道，可以从系统和应用之间可靠地获取数据；</li>
+<li>构建实时的流式应用，可以传输和响应数据流。</li>
+</ul>
+<p>几个概念：</p>
+<ul>
+<li>Kafka以集群的形式运行在一个或者多个服务器上，可以跨越多个数据中心。</li>
+<li>Kafka集群以目录的形式存储消息，称之为主题。</li>
+<li>每条记录包含key、value和时间戳。</li>
+</ul>
+<p>Kafka有四中核心API：</p>
+<ul>
+<li>Producer API允许应用发布消息到一个或者多个Kafka主题。</li>
+<li>Consumer API允许订阅一个或者多个主题，并处理主题对其产生的消息。</li>
+<li>Streams API允许应用作为一个流处理器，消费来自一个或多个主题的输入流，并产生输出流到一个或多个主题，有效的将输入流转换为输出流。</li>
+<li>Connector API允许构建和运行可重用的生产者或消费者，将Kafka主题连接到现有的应用程序或数据系统。例如，关系型数据库的连接器将会捕获每张表的改变。</li>
+</ul>
+<p>在Kafka中，客户端与服务端之间的通讯是通过一个简单的、高性能的、语言无关的TCP协议完成。这个协议是版本化的，且能够向后兼容老版本。官方提供了Java客户端，但其实客户端可以使用其他语言。</p>
+<h1 id="Topics-and-Logs-主题与日志"><a href="#Topics-and-Logs-主题与日志" class="headerlink" title="Topics and Logs(主题与日志)"></a>Topics and Logs(主题与日志)</h1><p>首先研究下Kafka为消息提供的核心抽象概念-主题(topic)。</p>
+<p>主题是发布记录的类别或者源(feed)名称。Kafka中的主题总是多用户的；即主题可以有零个、一个或多个消费者来订阅写入其中的数据。</p>
+<p>对每一个主题，kafka集群管理着一个如下的分区日志(partitioned log)：<br><img src="https://cdn.staticaly.com/gh/DoggieXue/Image-Home@master/log_anatomy.ssxvfwmgef4.jpg" alt="log_anatomy"></p>
+<p>每个分区是一个有序的、不可变的记录序列，这个序列会持续的增加，形成一个结构化提交日志。分区中的每条记录被赋予一个称为偏移量(offset)的序列化ID值来唯一标识分区中的记录。</p>
+<p>Kafka集群使用一个可配置的保留期来持久化所有发布的记录，无论该记录是否被消费。例如，如果保留策略被设置为两天，那么在记录发布后的两天内，他都是可以被用于消费的，两天后，将会被丢弃来释放空间。Kafka的性能是一个关于数据大小的有效常量，因此长时间存储数据不会有任何问题。<br><img src="https://cdn.staticaly.com/gh/DoggieXue/Image-Home@master/log_consumer.1w83ozu078f4.jpg" alt="log_consumer"></p>
+<p>实际上，每个消费者唯一持有的元数据是消费者在日志中的偏移量或位置。该偏移量由消费者控制：通常，消费者会根据读取的记录线性地增加偏移量，但实际上，鉴于消费者控制这个位置，它可能以它喜欢的任何顺序消费记录。例如，消费者可以重置老的偏移量来重新处理以前的数据，或者跳过开头到最近的数据，并以此为起始位置开始消费。</p>
+<p>这些特点的结合意味着Kafka的消费者是非常廉价的，它们的去或留不会对集群或其他消费者产生任何影响。例如，可以使用命令行工具’tail’任何主题的内容，而不会对已有的消费者产生任何影响。</p>
+<p>日志中分区有几个用途。首先，他们允许日志扩展到超出单个服务器的大小。每个单独的分区必须适合持有它的服务器，但是一个主题可能包含多个分区，所以它可以处理任意数量的数据。其次，他们作为平行的单元，在这一点上可以做的更多。</p>
+<h1 id="Distribution-分销"><a href="#Distribution-分销" class="headerlink" title="Distribution(分销)"></a>Distribution(分销)</h1><p>日志分区遍布Kafka集群的服务器中，每台服务器处理数据和共享分区的请求。每个分区被复制到可配置数量的服务器上用于容错。</p>
+<p>每个分区都有一台服务器作为“leader”，零台或更多服务器作为“followrs”。leader为分区处理所有的读写请求，follower会被动的复制leader。如果leader挂了，其中的一个follower会自动成为leader。每台服务器会作为某些分区的leader和其他分区的follower，因此负载在集群中可以很好的被均衡。</p>
+<h1 id="Producers-生产者"><a href="#Producers-生产者" class="headerlink" title="Producers(生产者)"></a>Producers(生产者)</h1><p>生产者将发布数据到其选择的主题。生产者负责选择发布哪条记录到主题下的哪个分区。这可以使用round-robin算法实现简单的负载均衡，或者通过语义分区函数实现。分区时通常使用第二种。</p>
+<h1 id="Consumers-消费者"><a href="#Consumers-消费者" class="headerlink" title="Consumers(消费者)"></a>Consumers(消费者)</h1><p>消费者会在他们身上打上名为消费者组的标签，且每一条发布到主题的记录会被分发给订阅了消费者组中每一个的消费者实例。消费者实例可以运行在单独的进程中，也可以运行在单独的服务器上。</p>
+<p>如果所有的消费者实例在相同的消费者组中，那么消息会被有效的负载均衡到每一个消费者实例上。</p>
+<p>如果所有的消费者实例在不同的消费者组中，那么每一条记录将会被广播到所有的消费者进程中。<br><img src="https://cdn.staticaly.com/gh/DoggieXue/Image-Home@master/consumer-groups.2bz96uj8c0w0.jpg" alt="consumer-groups"></p>
+<p>两个服务器的Kafka集群，拥有四个分区（P0-P4）和两个消费者组。消费者组A有两个消费者实例，消费者组B有四个消费者实例。</p>
+<p>更常见的是，我们发现主题有少量的消费者组，每一个消费者组都有一个“逻辑订阅者”。每个消费者组由多个消费者实例组成，用于扩容和容错。这只不过是发布-订阅语义，其中订阅服务器是消费者集群，而不是单个进程。</p>
+<p>Kafka中实现消费的方式是通过在消费者实例上划分日志中的分区，以便在任何时间点每一个实例是“公平共享”分区的专有消费者。这种维护组中成员资格的过程由Kafka协议动态处理。如果一个新的实例加入到组中，它会从组中其他成员那里分担一些分区；如果某个实例挂掉了，它的分区会被分发给其他活跃的实例。</p>
+<p>Kafka只提供分区内记录的总顺序，而不提供主题中不同分区之间的总顺序。对于大部分应用来说，按分区排序和按键分区数据的能力已经足够了。然而，如果你需要记录总的顺序，可以通过只有一个分区的主题来实现，尽管这意味着每个消费者组只有一个消费者进程。</p>
+<h1 id="Multi-tenancy"><a href="#Multi-tenancy" class="headerlink" title="Multi-tenancy"></a>Multi-tenancy</h1><p>可以将Kafka部署为多租户(Multi-tenancy)解决方案。Multi-tenancy可以通过配置哪个主题生产或者消费数据的方式来实现。还有对配额(quotas)的支持。管理员可以定义和强制请求上的配额来控制客户端使用的代理资源。</p>
+<h1 id="Guarantee"><a href="#Guarantee" class="headerlink" title="Guarantee"></a>Guarantee</h1><p>高性能kafka给予以下保证：</p>
+<ul>
+<li>生产者发送消息到特定的主题分区，将会按照消息发送的顺序被追加。也就是说，如果消息M1和M2由同一个生产者发送，且M1先发送，那么M1的偏移量比M2小，且比M2更早的出现在日志中。</li>
+<li>消费者实例按照日志中存储的顺序查看消息。</li>
+<li>对于拥有N个副本的主题，最多容忍N-1个服务器故障，从而保证不会丢失任何提交到日志中的记录。</li>
+</ul>
+
+            </div>
+
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Kafka/">#Kafka</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                               rel="prev"
+                               href="/2020/01/09/Kafka%E5%AD%A6%E4%B9%A0%E7%AC%AC%E4%B8%89%E7%AF%87-%E7%90%86%E8%AE%BA%E8%BF%9B%E9%98%B6%E7%AF%87/"
+                            >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                                <span class="title flex-center">
+                                <span class="post-nav-title-item">Kafka学习第三篇-理论进阶篇</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                               rel="next"
+                               href="/2020/01/06/Kafka%E5%AD%A6%E4%B9%A0%E7%AC%AC%E4%B8%80%E7%AF%87-%E5%85%A5%E9%97%A8%E7%AF%87/"
+                            >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">Kafka学习第一篇-入门篇</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                                <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Kafka%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Kafka简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Topics-and-Logs-%E4%B8%BB%E9%A2%98%E4%B8%8E%E6%97%A5%E5%BF%97"><span class="nav-number">2.</span> <span class="nav-text">Topics and Logs(主题与日志)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Distribution-%E5%88%86%E9%94%80"><span class="nav-number">3.</span> <span class="nav-text">Distribution(分销)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Producers-%E7%94%9F%E4%BA%A7%E8%80%85"><span class="nav-number">4.</span> <span class="nav-text">Producers(生产者)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Consumers-%E6%B6%88%E8%B4%B9%E8%80%85"><span class="nav-number">5.</span> <span class="nav-text">Consumers(消费者)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Multi-tenancy"><span class="nav-number">6.</span> <span class="nav-text">Multi-tenancy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Guarantee"><span class="nav-number">7.</span> <span class="nav-text">Guarantee</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            
+<footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>2018</span> -
+            
+            2023
+            
+                &nbsp;<i class="fas fa-heart icon-animate"></i>
+                &nbsp;<a href="/">Doggie</a>
+            
+        </div>
+        
+            <script async data-pjax
+                    src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    Visitor Count&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                
+                
+                    Totalview&nbsp;<span id="busuanzi_value_site_pv"></span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.6.1</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/local-search.js"></script>
+
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/toc.js"></script>
+        
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Doggie">
+    
+    <title>
+        
+            Nginx常用指令使用总结 |
+        
+        Keep Moving
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/brands.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en","path":"search.json"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/logo.svg","favicon":"/images/logo.svg","avatar":"/images/avatar.svg","font_size":null,"font_family":"STSong, STHeiti","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":false,"background_img":"/images/bg.svg","description":"请在这里输入你想对全世界每个人要说的话...","font_color":null,"hitokoto":true},"scroll":{"progress_bar":false,"percent":true}},"local_search":{"enable":true,"preload":true},"code_copy":{},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":false},"comment":{"enable":false,"use":"valine","valine":{"appid":"uV1DqTVgOHpeh50rftSyg4NR-gzGzoHsz","appkey":"0FhpBTmkC3B0LaUFCRJrlk0H","server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"version":"3.6.1"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original article title","author":"Original article author","link":"Original article link"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.svg">
+                </a>
+            
+            <a class="logo-title" href="/">
+               Keep Moving
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            <div class="article-title">
+                <span class="title-hover-animation">Nginx常用指令使用总结</span>
+            </div>
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/avatar.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Doggie</span>
+                            
+                                <span class="author-label">Lv4</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            
+<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        
+            <i class="fa-regular fa-calendar-plus"></i>&nbsp;
+        
+        <span class="pc">2018-04-18 10:58:58</span>
+        <span class="mobile">2018-04-18 10:58</span>
+    </span>
+    
+        <span class="article-update-date article-meta-item">
+        <i class="fas fa-file-pen"></i>&nbsp;
+        <span class="pc">2023-02-07 11:12:33</span>
+    </span>
+    
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/Nginx/">Nginx</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Nginx-OpenResty/">Nginx/OpenResty</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>1.9k Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>7 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content keep-markdown-body">
+                
+
+                <p>主要记录了root、proxy_pass、rewrite、return、error_page的用法。</p>
+<h1 id="root-指令"><a href="#root-指令" class="headerlink" title="root 指令"></a>root 指令</h1><p>定义了静态文件的根目录，并且和URI拼接形成最终的本地文件路径。如：</p>
+<pre><code>root /etc/nginx/html；
+</code></pre>
+<p>当请求&#x2F;static&#x2F;js&#x2F;public.js时，则拼接后返回本地服务器文件 &#x2F;etc&#x2F;nginx&#x2F;html&#x2F;static&#x2F;js&#x2F;public.js</p>
+<h1 id="proxy-pass-指令"><a href="#proxy-pass-指令" class="headerlink" title="proxy_pass 指令"></a>proxy_pass 指令</h1><p>将请求传递到URL指向的代理服务器，然后将来自代理服务器的响应回传给客户端。 如：</p>
+<pre><code>location /api &#123;
+    rewrite ^/api/(.*)$  /$1 break;
+    proxy_pass http://localhost:8081;
+&#125;
+</code></pre>
+<p>以上配置表示，对于&#x2F;api开头的URI进行处理，首先对URI进行重写得到新的URI，然后将请求转发给<a class="link"   target="_blank" rel="noopener" href="http://localhost:8081/%E6%96%B0%E7%9A%84URI" >http://localhost:8081/新的URI<i class="fas fa-external-link-alt"></i></a> （默认请求参数也是会传递过去的！）</p>
+<h1 id="rewrite-指令"><a href="#rewrite-指令" class="headerlink" title="rewrite 指令"></a>rewrite 指令</h1><p>可以多次修改请求的URI。<br>语法为：  </p>
+<pre><code>rewrite regex replacement flag
+</code></pre>
+<ul>
+<li><p>第一个参数是URI需要匹配的正则表达式;</p>
+</li>
+<li><p>第二个参数是将要替换的URI;</p>
+</li>
+<li><p>第三个参数可选（lase|break|redirect|permanent）指示是否继续可以重写(last|break)或者返回重定向代码301或者302(redirect|permanent)。如： </p>
+<p>  location  &#x2F;users {<br>  rewite ^&#x2F;users&#x2F;(.*)$  &#x2F;show?user&#x3D;$1 break;<br>  }</p>
+</li>
+</ul>
+<p>以上配置，对于&#x2F;users&#x2F;123 这样的URI会被重写成 &#x2F;show?user&#x3D;123 。<br>对于上面proxy_pass实例中rewrite指令，会将&#x2F;api&#x2F;app&#x2F;index重写成&#x2F;app&#x2F;index<br>flag说明：<br>last: 在当前server或者location中停止执行rewrite指令，但是Nginx会继续搜索与新的URI匹配的location，并在匹配的location中执行任何rewrite指令(URI可能会再次改变)，若URI发生改变，则继续搜索与之匹配的location进行处理。<br>break: 停止当前server或者location中rewrite指令的处理，并取消搜索与新URI匹配的location,不会执行location中的rewrite指令。<br>最好不要在server块中的rewrite指令中使用break标记。</p>
+<p>在server块中的rewrite指令，使用last标记：</p>
+<pre><code>server &#123;
+    ...
+    rewrite ^(/file.*)/image/(/*)\..*$  $1/web1/$2.jpeg last;
+    rewrite ^(/file.*)/archive/(/*)\..*$  $1/media/$2.txt last;
+    return 403;
+    ...
+&#125;
+</code></pre>
+<p>例如&#x2F;file&#x2F;some&#x2F;image&#x2F;20180411被重写成 &#x2F;file&#x2F;some&#x2F;web1&#x2F;20180411.jpeg。由于last标志，第二个rewrite和return指令被跳过，但是Nginx继续处理更改后的URI，如匹配到某个location，则执行location中的任何指令，包括rewrite指令（这意味着URI可能再次改变）。<br>例如&#x2F;file&#x2F;some&#x2F;archive&#x2F;20180411被重写成&#x2F;file&#x2F;some&#x2F;media&#x2F;20180411.txt，测试return指令被跳过，但是Nginx继续处理更改后的URI。<br>例如&#x2F;file&#x2F;some&#x2F;test&#x2F;fileName 的URI没有匹配以上任何rewrite指令，则返回403状态码给客户端，Nginx停止处理。</p>
+<p>在server块中的rewrite指令，使用break标记：</p>
+<pre><code>server  &#123;
+    ...
+    rewrite ^(/file.*)/image/(/*)\..*$  $1/web1/$2.jpeg break;
+    rewrite ^(/file.*)/audio/(/*)\..*$  $1/archive/$2.txt break;
+    return 403;
+    ...
+&#125;
+</code></pre>
+<p>例如&#x2F;file&#x2F;some&#x2F;image&#x2F;20180411被重写成 &#x2F;file&#x2F;some&#x2F;image&#x2F;20180411.jpeg。由于break标志，Nginx会继续判断后面的rewrite与新得到URI是否匹配（始终在当前server块中）。</p>
+<p>在location块中的rewrite指令，使用last标记：</p>
+<pre><code>location  /wechat  &#123;
+    rewrite ^(/file/.*)/image/(.*)\..*$ $1/web1/$2.jpeg last;
+    rewrite ^(/file/.*)/audio/(.*)\..*$ $1/archive/$2.txt last;
+&#125;
+</code></pre>
+<p>例如一个URI匹配第一个rewrite指令，由于last标记，Nginx会将新的URI到所有location中再执行一遍包括rewrite指令。</p>
+<p>在location块中的rewrite指令，使用break标记：</p>
+<pre><code>location /wechat  &#123;
+    rewrite ^(/file/.*)/image/(.*)\..*$ $1/web1/$2.jpeg break;
+    rewrite ^(/file/.*)/audio/(.*)\..*$ $1/archive/$2.txt break;
+&#125;
+</code></pre>
+<p>例如一个URI匹配第一个rewrite指令，由于break标记，Nginx会继续在当前location中执行第三行规则中的匹配处理，始终在当前location中。</p>
+<p>location指令接受两种类型的参数</p>
+<p>前缀字符串： 前缀字符串参数，URI必须严格以它开头。<br>正则表达式： 正则表达式参数，以<code>~</code>开头表示大小写敏感，以<code>~*</code>开头表示大小写不敏感。正则表达式中的<code>.</code>要加转义字符<code>\</code>，写成<code>\.</code><br>例如一个匹配以.html或者.htm结尾的URI的location：</p>
+<pre><code>location  ~  \.html?  &#123; #
+    ...
+&#125;
+</code></pre>
+<p>正则表达式的优先级大于前缀字符串。如果找到匹配的前缀字符串，仍继续搜索正则表达式，但是如果前缀字符串以<code>^~</code>开头，则不再检查正则表达式！<br>具体的搜索匹配流程如下：</p>
+<ul>
+<li>将URI与所有的前缀字符串进行比较</li>
+<li><code>=</code>修饰符表明URI必须与前缀字符串相等，如果找到，则停止搜索。</li>
+<li>如果找到的最长前缀匹配字符串以<code>^~</code>开头，则不在搜索正则表达式是否匹配。</li>
+<li>存储匹配的最长前缀字符串。</li>
+<li>测试对比URI与正则表达式。</li>
+<li>找到第一个匹配的正则表达式后停止。</li>
+<li>如果没有正则表达式匹配，则使用4存储的前缀字符串对应的location。</li>
+<li><code>=</code>修饰符的优先级最高。如网站首页频繁访问，可以专门定义一个location 来减少搜索匹配次数，提高速度。</li>
+</ul>
+<h1 id="return指令"><a href="#return指令" class="headerlink" title="return指令"></a>return指令</h1><p>第一个参数是响应代码，可选的第二个参数可以是重定向的URL或者在响应正文中返回的文本。如</p>
+<pre><code>location /permannetly/moved/url &#123;
+    return 301 http://www.example.com/moved/here;
+&#125;
+</code></pre>
+<p>该指令可以包含在location和server上下文中。</p>
+<h1 id="error-page指令"><a href="#error-page指令" class="headerlink" title="error_page指令"></a>error_page指令</h1><p>可以配置特定错误码的错误页面，或者重定向到其他页面。如</p>
+<pre><code>#在404错误发生时返回/404.html
+error_page 404 /404.html    
+</code></pre>
+<p>该指令定义了如何处理错误，而不会直接返回，而return指令是立即返回。</p>
+<pre><code>location  /old/path.html &#123;
+    error_page 404 =  301 http://example.com/new/path.html;
+&#125;
+</code></pre>
+<p>当Nginx找不到页面时，它将使用代码301替换404，并将客户端重定向到 <code>http://example.com/new/path.html</code>。比如当客户端仍尝试用旧的 URI 访问页面时，301代码通知浏览器页面已永久移除，并且需要自动替换为返回的新地址。</p>
+<h1 id="try-files指令"><a href="#try-files指令" class="headerlink" title="try_files指令"></a>try_files指令</h1><h1 id="附录-常用正则"><a href="#附录-常用正则" class="headerlink" title="附录 常用正则"></a>附录 常用正则</h1><pre><code>. ： 匹配除换行符以外的任意字符
+? ： 重复0次或1次
++ ： 重复1次或更多次
+*： 重复0次或更多次
+\d ：匹配数字
+^ ： 匹配字符串的开始
+$ ： 匹配字符串的结束
+&#123;n&#125; ： 重复n次
+&#123;n,&#125; ： 重复n次或更多次
+[c] ： 匹配单个字符c
+[a-z]： 匹配a-z小写字母的任意一个
+全局变量
+$args ： #这个变量等于请求行中的参数，同$query_string
+$content_length ： 请求头中的Content-length字段。
+$content_type ： 请求头中的Content-Type字段。
+$document_root ： 当前请求在root指令中指定的值。
+$host ： 请求主机头字段，否则为服务器名称。
+$http_user_agent ： 客户端agent信息
+$http_cookie ： 客户端cookie信息
+$limit_rate ： 这个变量可以限制连接速率。
+$request_method ： 客户端请求的动作，通常为GET或POST。
+$remote_addr ： 客户端的IP地址。
+$remote_port ： 客户端的端口。
+$remote_user ： 已经经过Auth Basic Module验证的用户名。
+$request_filename ： 当前请求的文件路径，由root或alias指令与URI请求生成。
+$scheme ： HTTP方法（如http，https）。
+$server_protocol ： 请求使用的协议，通常是HTTP/1.0或HTTP/1.1。
+$server_addr ： 服务器地址，在完成一次系统调用后可以确定这个值。
+$server_name ： 服务器名称。
+$server_port ： 请求到达服务器的端口号。
+$request_uri ： 包含请求参数的原始URI，不包含主机名，如：/foo/bar.php?arg=baz。
+$uri ： 不带请求参数的当前URI，$uri不包含主机名，如/foo/bar.html。
+$document_uri ： 与$uri相同。
+例如请求：http://localhost:88/test1/test2/test.php
+$host：localhost
+$server_port：88
+$request_uri：/test1/test2/test.php
+$document_uri：/test1/test2/test.php
+$document_root：/var/www/html
+$request_filename：/var/www/html/test1/test2/test.php
+</code></pre>
+
+            </div>
+
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Nginx-OpenResty/">#Nginx/OpenResty</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                               rel="prev"
+                               href="/2018/12/29/%E8%80%83%E8%99%91%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E4%BB%A3%E6%9B%BF%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95/"
+                            >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                                <span class="title flex-center">
+                                <span class="post-nav-title-item">Item-1 考虑使用静态工厂方法代替构造方法</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                            </a>
+                        </div>
+                    
+                    
+                </div>
+            
+
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#root-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">root 指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#proxy-pass-%E6%8C%87%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">proxy_pass 指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rewrite-%E6%8C%87%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">rewrite 指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#return%E6%8C%87%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">return指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#error-page%E6%8C%87%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">error_page指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#try-files%E6%8C%87%E4%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">try_files指令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E5%BD%95-%E5%B8%B8%E7%94%A8%E6%AD%A3%E5%88%99"><span class="nav-number">7.</span> <span class="nav-text">附录 常用正则</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            
+<footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>2018</span> -
+            
+            2023
+            
+                &nbsp;<i class="fas fa-heart icon-animate"></i>
+                &nbsp;<a href="/">Doggie</a>
+            
+        </div>
+        
+            <script async data-pjax
+                    src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    Visitor Count&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                
+                
+                    Totalview&nbsp;<span id="busuanzi_value_site_pv"></span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.6.1</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/local-search.js"></script>
+
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/toc.js"></script>
+        
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

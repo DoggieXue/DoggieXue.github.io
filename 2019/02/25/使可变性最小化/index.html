@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Doggie">
+    
+    <title>
+        
+            Item-17 使可变性最小化 |
+        
+        Keep Moving
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/brands.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en","path":"search.json"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/logo.svg","favicon":"/images/logo.svg","avatar":"/images/avatar.svg","font_size":null,"font_family":"STSong, STHeiti","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":false,"background_img":"/images/bg.svg","description":"请在这里输入你想对全世界每个人要说的话...","font_color":null,"hitokoto":true},"scroll":{"progress_bar":false,"percent":true}},"local_search":{"enable":true,"preload":true},"code_copy":{},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":false},"comment":{"enable":false,"use":"valine","valine":{"appid":"uV1DqTVgOHpeh50rftSyg4NR-gzGzoHsz","appkey":"0FhpBTmkC3B0LaUFCRJrlk0H","server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"version":"3.6.1"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original article title","author":"Original article author","link":"Original article link"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.svg">
+                </a>
+            
+            <a class="logo-title" href="/">
+               Keep Moving
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            <div class="article-title">
+                <span class="title-hover-animation">Item-17 使可变性最小化</span>
+            </div>
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/avatar.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Doggie</span>
+                            
+                                <span class="author-label">Lv4</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            
+<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        
+            <i class="fa-regular fa-calendar-plus"></i>&nbsp;
+        
+        <span class="pc">2019-02-25 18:15:32</span>
+        <span class="mobile">2019-02-25 18:15</span>
+    </span>
+    
+        <span class="article-update-date article-meta-item">
+        <i class="fas fa-file-pen"></i>&nbsp;
+        <span class="pc">2023-02-07 11:07:23</span>
+    </span>
+    
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Effective-Java-3rd/">Effective Java 3rd</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>4.2k Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>15 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content keep-markdown-body">
+                
+
+                <p>简单来说，不可变类是一种实例不能被修改的类。其每个实例包含的信息在对象的整个生命中期中是固定的，因此在这个过程中观察不到任何改变。Java平台类库包含很多不可变类，包括String、包装原生类、BigInteger和BigDecimal。这么做有许多好处：不可变类比可变类更易于设计、实现和使用。他们更少出错并且更安全。</p>
+<p>  让一个类不可变，要遵循以下五条规则：</p>
+<ul>
+<li>禁止提供修改对象状态的方法（比如存取器mutators，即setter方法）。</li>
+<li>确保该类不能被扩展。这会阻止粗心或恶意子类通过改变对象的状态来破坏类的不可变行为。为防止类被继承（子类化），通常是将类定义为final的，但还有另一种方式，我们后面讨论。</li>
+<li>将所有字段定义成final的。这可以清楚地以系统强制的方式表达我们的意图。而且，必须确保新创建实例的引用在缺乏同步机制的情况下,被从一个线程传递给另一个线程时的正确行为，正如在内存模型中阐述的那样【JLS, 17.5; Goetz06, 16】。</li>
+<li>将所有字段定义成私有的。这可以防止客户端获取被字段引用的可变对象的访问权，并且直接修改这些对象。虽然技术上允许不可变类的公共的终态的子弹包含原生值或不可变对象引用，但不建议这么做，因为它会妨碍了在后续发行版本中修改类的内部表示。</li>
+<li>确保对任何可变组件的互斥访问。如果类里包含任何可变对象的引用，则要确保类的客户端不能获取指向这些对象引用。永远不要用客户端提供的对象引用来初始化这些字段或者从访问方法中返回这个字段的引用。在构造方法、访问器和readObject方法中（Item 50）请使用保护性拷贝（Item 80）。</li>
+</ul>
+<p>  在之前条款中的许多示例类都是不可变的。其中一个是条款11中的PhoneNumber，它的每一个属性都有访问方法，但是没有相应的设置方法。下面是一个稍微复杂点的例子：</p>
+<pre><code>// Immutable complex number class 
+public final class Complex &#123; 
+    private final double re; 
+    private final double im;
+
+    public Complex(double re, double im) &#123;
+        this.re = re;
+        this.im = im;
+    &#125;
+    public double realPart() &#123;
+        return re; 
+    &#125;
+    public double imaginaryPart() &#123; 
+        return im; 
+    &#125;
+    public Complex plus(Complex c) &#123;
+        return new Complex(re + c.re, im + c.im);
+    &#125;
+    public Complex minus(Complex c) &#123;
+        return new Complex(re - c.re, im - c.im);
+    &#125;
+    public Complex times(Complex c) &#123;
+        return new Complex(re * c.re - im * c.im,
+                        re * c.im + im * c.re);
+    &#125;
+    public Complex dividedBy(Complex c) &#123;
+        double tmp = c.re * c.re + c.im * c.im;
+        return new Complex((re * c.re + im * c.im) / tmp,
+                        (im * c.re - re * c.im) / tmp);
+    &#125;
+
+    @Override 
+    public boolean equals(Object o) &#123;
+        if (o == this)
+            return true;
+        if (!(o instanceof Complex))
+            return false;
+        Complex c = (Complex) o;
+        // See page 47 to find out why we use compare instead of == return Double.compare(c.re, re) == 0
+            &amp;&amp; Double.compare(c.im, im) == 0;
+        &#125;
+        @Override public int hashCode() &#123;
+            return 31 * Double.hashCode(re) + Double.hashCode(im);
+        &#125;
+        @Override public String toString() &#123;
+            return &quot;(&quot; + re + &quot; + &quot; + im + &quot;i)&quot;;
+    &#125; 
+
+&#125;
+</code></pre>
+<p>  这个类表示一个复数（y一个包含了实数部分和虚数部分的数字）。除了标准Object方法，它为实数部分和虚数部分部分提供了访问方法，并且提供了四个基本的数学运算：加法、减法、乘法和除法。注意基本运算如何创建的，以及为什么返回一个新的Complex实例，而不是修改原有的实例。这种模式被称作函数是方法（functional approache），因为方法返回应用函数在其操作数上得出的结果，而没有修改这个操作数。与之相应的是程序方法或命令方法，这两种方法都将一个过程应用于操作数，从而导致操作数的状态发生变化。注意方法名称是介词(如plus)而不是动词（如add）。这强调了方法不会改变对象值的事实。BigInteger和BigDecimal类不遵循该命名规范，并且它导致了许多使用错误。<br>  如果你对函数式方法不熟悉，可能会觉得它有点不自然，但它（可以让传进来的参数）具有不可变性，这就具有许多优点。不可变对象能让很多情况简单化。不可变对象可以保持一个状态，即创建它的状态。如果确保所有构造函数都建立了类不变量（invariants，约束关系），那么可以保证这些不变量始终有效，就无需你或者使用这个类的程序员做额外的工作。另一方面，可变对象可以拥有任意复杂的状态空间。如果文档没有提供修改方法会造成对象状态转移的精确描述，则可能很难或者不可能放心的使用可变类。<br>  不可变类本质上（天生的）就是线程安全的，它们不需要同步。他们不会被多线程并发访问所破坏。这是实现线程安全最简单的方法。既然没有线程可以观察到另一个线程对不可变对象的任何影响，那么不可变对象可以被自由地共享。因此，不可变类应该鼓励客户端在任何可能的地方复用现有实例。其中一种简单的方式是为常用值提供共有静态且终态的常量值。例如，Complex类提供如下常量：</p>
+<pre><code>public static final Complex ZERO = new Complex(0, 0);
+public static final Complex ONE  = new Complex(1, 0);
+public static final Complex I    = new Complex(0, 1);
+</code></pre>
+<p>  这种方式可以更进一步扩展。不可变类可以提供静态工厂来缓存频繁请求的实例，避免重复创建现有实例。所有的包装原生类和BigInteger都采用了这种方式。使用这些静态工厂导致客户端共享实例而不是每次创建新实例，还会减少内存占用和垃圾回收的消耗。在设计一个新类时，选择静态工厂代替共有构造方法，可以让你在今后灵活地添加缓存，而不需要修改客户端。<br>  不可变对象可以自由地被共享这一事实的好处（consequence）是，你永远不能为他们做防御性拷贝（Item 50）。事实上，你根本就不用做任何拷贝，因为拷贝结果将永远等于原对象。因此，你不需要也不应该为不可变类提供clone方法或者（用于）复制的构造函数（Item 13）。在Java平台的早期阶段，这一点不是很好理解，因此String类提供了一个（用于复制）的构造方法，但它应该尽量少用。<br>  不仅可以共享不可变对象，还可以共享它们的内部信息。例如，BigInteger类在内部使用一个符号-数值表示。符号使用一个int值来表示，数值使用int数组来表示。其negate方法产生一个数值相同、符号x相反的新的BigInteger。虽然数组是可变的，（这个方法）也不需要复制数组；新创建的BigInteger指向原始实例的同一个内部数组。<br>  不可变对象为其他对象提供了很多的构建快，无论（其他对象）是可变的还是不可变的。如果你知道complex对象的内部组件（component object）不会发生变化，那么就很容易维护它的不变性(invariants)。该规则的一个特例是：不可变对象可以创建大量的map键和set集合元素：一旦它们成了map的键或set集合元素，也不用担心它们的值发生变化，虽然这会破坏map或set的不变性。<br>  不可变对象提供了免费的失败原子机制（Item 76）。它们的状态永远不会改变，因此，不可能出现临时不一致性。<br>  不可变对象的最大缺点是对每一个不同的值都需要一个对应的对象。创建这些对象花销会很大，尤其是大型对象。例如，假设你有一个上百万位的BigInteger，并且你想要更改其低位：</p>
+<pre><code>BigInteger moby = ...;
+moby = moby.flipBit(0);
+</code></pre>
+<p>flipBit方法创建一个新的BigInteger实例，也有百万位的长度，它只有一位与原对象不同。该操作需要的时间与空间与BigInteger大小成正比。将此与java.util.BitSet对比。像BigInteger一样的是，BitSet表示一个任意长的位，但跟BigInteger不一样的是，BitSet是可变的。BitSet类提供了一个方法，允许你在常量时间内修改一个上百万位实例的其中某一位的状态：</p>
+<pre><code>BitSet moby = ...;
+moby.flip(0);
+</code></pre>
+<p>  如果你执行一个多步操作并且每一步操作都会生成一个新的对象，同事丢弃除最终结果意外的其余对象，那么性能问题将会被放大。有两种方式可以解决这个问题。第一个是猜测哪些多步操作会经常遇到，并将它们作为基本类型提供。如果以基本类型的方式提供多步操作，那么不可变对象就不用在每一步创建一个对应的对象。在内部，不可变类可以灵活变动。例如，BigInteger包含一个包级私有的“伴生类”，它可以用于加速诸如模幂运算（modular exponentiation.）的多步操作。基于前面概述的所有原因，使用可变的伴生类比使用BigInteger更难。幸运的是你不需要使用（这个伴生类），因为BigInteger的实现者已经为你做了这项艰难的工作。<br>  如果你能准确预测到客户端将在不可变类上执行哪些复杂操作，那么包级别私有的可变伴生类方式将会运行的很好。如果不能准确预测，那最好的选择是提供一个共有的可变伴生类。该方式的主要示例是Java平台类库中的String类，它的半生类是StringBuilder（以及快废弃不用的StringBuffer）。<br>  既然你知道如何创建一个不可变类并且了解不变性的利弊，下面让我们讨论几个设计方案。回想一下，为保证不变性，一个类不得允许自己被子类化。这可以通过将类定义成final的来实现，但有另一种更灵活的选择。除了将不可变类定义成final的，可以将它所有的构造方法定义成私有的或者包级私有的，并且添加公共静态工厂替代公共构造方法（Item 1）。为了具体说明这一点，下面是Complex类采用这种方式的实现：</p>
+<pre><code>//Immutable class with static factories instead of constructors
+public class Complex &#123;
+    private final double re;
+    private final double im;
+
+    private Complex(double re, double im) &#123; 
+        this.re = re;
+        this.im = im;
+    &#125;
+
+    public static Complex valueOf(double re, double im) &#123; 
+        return new Complex(re, im);
+    &#125;
+
+... // Remainder unchanged
+&#125;
+</code></pre>
+<p>  这种方式通常是最好的选择。它是最灵活的，因为它允许使用多个包级私有的实现类。对于包以外的客户端来说，不可变类实际上是终态的，因为它不可能扩展一个来自其他包并且缺少公共或者受保护的构造方法的类。除了允许多个实现类的灵活性外，该方式还可能在未来发行版本中通过提高静态工厂的对象缓存能力来改善类的性能。<br>  当初在编BigInteger和BigDecimal时，不可变类必须必须是终态的并不被广泛地理解，所以他们的所有方法都可以被重写。不幸的是，在保留向后兼容时，这无法得到修改正。如果你编写了一个类，其安全性取决于来自不可信客户端上送的BigInteger或BigDecimal参数的不变性，那么你必须检查下参数是不是“真的”BigInteger或者BigDecimal，而不是不可信子类的实例。如果它是后者，你必须假设它是可变的，并进行防御性拷贝（Item 50）：</p>
+<pre><code>public static BigInteger safeInstance(BigInteger val) &#123;
+    return val.getClass() == BigInteger.class ? val : new BigInteger(val.toByteArray());
+&#125;
+</code></pre>
+<p>  该条款开始时列出的不可变类的规则表明，没有方法可以修改对象并且其所有字段必须是终态的。事实上，这些规则比（实际需求）要强硬一些，可以（适当）放宽以提高性能。事实是没有任何方法会对对象的状态产生外部可见的变化。然而，一些不可变类会在首次需要的时候，将一些复杂计算的结果缓存到一个或更多的非终态变。如果相同的值被再次请求，将会返回缓存值，来节约重新计算的花销。这个技巧正是因为对象是不可变的，所以在重复计算时会产生相同的结果。<br>  例如，PhoneNumber的hashCode方法，在首次调用时计算哈希码并缓存它，一旦再次调用就返回缓存值。这个技巧是懒加载&#x2F;延迟加载（Item 83）的一个示例，也被String使用。<br>  应该添加一个有关于序列化的警告。如果你选择使你的不可变类实现Serializable接口，且它包含一个或者多个指向可变对象的字段，即使默认的序列化形式是可被接受的，你必须提供一个显式的readObject或者readResolve方法，或者使用ObjectOutputStream.writeUnshared或者ObjectInputStream.readUnshared方法。否则攻击者就会对你的类创建一个可变实例。条款88中详尽地介绍了该主题。<br>  总而言之，要抵制为每一个getter方法写一个setter方法的冲动。类应该是不可变的，除非有一个很好的理由使他们可变。不可变类提供许多优点，他们的唯一缺点是在某些情况下出现的性能问题。应该总是将值小的对象定义成不可变的，例如PhoneNumber和Complex。（在Java平台类库中有一些类应该定义成不可变的但是并没有，例如java.util.Date和java.awt.Point）要慎重考虑将值较大的对象定义成不可变的，例如String和BigInteger。只有在已经确认必须获得令人满意的性能后，才应该为不可变类提供共有的可变的伴生类（Item 67）。<br>  有一些类的（实现）不变性是不现实的。如果一个类不能被定义成不可变的，就要尽可能的限制其可变性。减少对象可能存在的状态数使得更容易推理分析对象，并减少出错的可能性。因此，除非有强有力的理由，否则将每一个字段定义成终态的。结合该条款和条款15的建议，你的自然倾向应该是声明每一个字段为public final，除非有充分的理由不这么做。<br>  构造函数应该创建完全初始化的对象，并建立所有不变量。除非有说服力的理由，否则不要在构造函数或静态工厂以外提供公共的初始化方法。同样的，不要提供一个“重新初始化”的方法，来使对象能够被重用，就好像它是用不同的初始状态构造的一样。这些方法通常都是以增加复杂性为代价，然后提供仅有的一点性能优势。<br>  CountDownLatch类例证了该规则。它是可变的，但是其状态空间有意保持较小。你创建一个实例，使用它一次后，就销毁了：一旦倒计时锁存器（countdown latch）的计数达到零，你就不能再使用它了。<br>  关于该条款中的Complex类，最后还要提一个注意点。这个例子只是用来阐述不变性。它不是一个工业强度的复数实现。它对于复杂的乘法和除法使用了标准公式，这些公式没有正确舍入，并且为复杂的NaN和无穷数提供了很差的语义【Kahan91, Smith62, Thomas94】。</p>
+
+            </div>
+
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Effective-Java-3rd/">#Effective Java 3rd</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                               rel="prev"
+                               href="/2019/02/26/%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF/"
+                            >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                                <span class="title flex-center">
+                                <span class="post-nav-title-item">Item-18 组合优于继承</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                               rel="next"
+                               href="/2019/02/24/%E5%9C%A8%E5%85%AC%E5%85%B1%E7%B1%BB%E4%B8%AD%EF%BC%8C%E4%BD%BF%E7%94%A8%E8%AE%BF%E9%97%AE%E5%99%A8%E6%96%B9%E6%B3%95%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E5%85%AC%E5%85%B1%E5%AD%97%E6%AE%B5/"
+                            >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">Item-16 在公共类中，使用访问器方法，而不是公共字段</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                                <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            
+<footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>2018</span> -
+            
+            2023
+            
+                &nbsp;<i class="fas fa-heart icon-animate"></i>
+                &nbsp;<a href="/">Doggie</a>
+            
+        </div>
+        
+            <script async data-pjax
+                    src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    Visitor Count&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                
+                
+                    Totalview&nbsp;<span id="busuanzi_value_site_pv"></span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.6.1</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/local-search.js"></script>
+
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/toc.js"></script>
+        
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

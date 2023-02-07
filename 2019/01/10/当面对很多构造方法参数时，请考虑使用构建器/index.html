@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Doggie">
+    
+    <title>
+        
+            Item-2 当面对很多构造方法参数时，请考虑使用构建器 |
+        
+        Keep Moving
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/brands.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en","path":"search.json"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/logo.svg","favicon":"/images/logo.svg","avatar":"/images/avatar.svg","font_size":null,"font_family":"STSong, STHeiti","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":false,"background_img":"/images/bg.svg","description":"请在这里输入你想对全世界每个人要说的话...","font_color":null,"hitokoto":true},"scroll":{"progress_bar":false,"percent":true}},"local_search":{"enable":true,"preload":true},"code_copy":{},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":false},"comment":{"enable":false,"use":"valine","valine":{"appid":"uV1DqTVgOHpeh50rftSyg4NR-gzGzoHsz","appkey":"0FhpBTmkC3B0LaUFCRJrlk0H","server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"version":"3.6.1"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original article title","author":"Original article author","link":"Original article link"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.svg">
+                </a>
+            
+            <a class="logo-title" href="/">
+               Keep Moving
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            <div class="article-title">
+                <span class="title-hover-animation">Item-2 当面对很多构造方法参数时，请考虑使用构建器</span>
+            </div>
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/avatar.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Doggie</span>
+                            
+                                <span class="author-label">Lv4</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            
+<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        
+            <i class="fa-regular fa-calendar-plus"></i>&nbsp;
+        
+        <span class="pc">2019-01-10 17:04:33</span>
+        <span class="mobile">2019-01-10 17:04</span>
+    </span>
+    
+        <span class="article-update-date article-meta-item">
+        <i class="fas fa-file-pen"></i>&nbsp;
+        <span class="pc">2023-02-07 11:07:43</span>
+    </span>
+    
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Effective-Java-3rd/">Effective Java 3rd</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>2.9k Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>11 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content keep-markdown-body">
+                
+
+                <p>静态工厂和构造方法有共同的限制：他们面对大量可选参数的时候不能很好的扩展。想想一下出现在食品包装背面代表营养成分的类。这个标签中有几个必要的字段-分量大小、每瓶容量以及每份的卡路里数，还有20多个可选的字段，如总脂肪量、饱和脂肪酸、反式脂肪酸、胆固醇以及钠元素等等。大多数产品中，只有几项可选字段有非零值。</p>
+<p>  当你编写这样一个类时，如何区分使用构造方法还是静态工厂方法呢？通常，程序员使用重叠构造方法模式，提供一个含有必要参数的构造方法，再提供一个包含一个可选参数的构造方法，然后提供一个包含两个可选参数的构造方法，以此类推，最后提供一个包含所有可选参数的构造方法。如下代码说明了这一点。为方便起见，只展示了4个可选变量：</p>
+<pre><code>//Telescoping constractor pattern --does not scale well
+public class NutritionFacts&#123;
+    private final int servingSize;  //(mL)            required
+    private final int servings;     //(per container) required
+    private final int calories;     //(per serving)   optional
+    private final int fat;          //(g/serving)     optional
+    private final int sodium;       //(mg/serving)    optional
+    private final int carbohydrate; //(g/serving)     optional
+
+    public NutritionFacts(int servingSize, int servings)&#123;
+        this(servingSize, servings, 0);
+    &#125;
+
+    public NutritionFacts(int servingSize, int servings, int calories)&#123;
+        this(servingSize, servings, calories, 0);
+    &#125;
+
+    public NutritionFacts(int servingSize, int servings, int calories, int fat)&#123;
+        this(servingSize, servings, calories, fat, 0);
+    &#125;
+
+    public NutritionFacts(int servingSize, int servings, int calories, int fat, int sodium)&#123;
+        this(servingSize, servings, calories, fat, sodium, 0);
+    &#125;
+
+    public NutritionFacts(int servingSize, int servings, int calories, int fat, int sodium, int carbohydrate)&#123;
+        this.servingSize = servingSize;
+        this.serving = servings;
+        this.calories = calories;
+        this.fat = fat;
+        this.sodium = sodium;
+        this.carbohydrate = carbohydrate;
+    &#125;
+&#125;
+</code></pre>
+<p>  当你想要创建一个实例时，你会使用包含你想设置所有参数的最短参数列表的构造方法：</p>
+<pre><code>NutritionFacts cocaCola = new NutritionFacts(240, 8, 100, 0, 35, 27);
+</code></pre>
+<p>  典型的，这个构造方法调用需要传递多个你不想设置的值，但是你又不得不给他们传值。在这个例子中，我们给fat赋了一个0值。只有六个参数看起来不是很糟糕，但是随着参数数量的增长，将会变得不可控。<br>  简单来说，重写构造方法模式是起作用的，但是当有许多参数的时候将很难编写客户端代码，并且客户端代码的可读性会很差。读者既要思考每个参数值的意思，又要认真的计算它们的位置。一长串相同类型的参数会导致很隐蔽的bug。如果客户端意外地调换了两个参数的位置，编译器不会报错，但是程序在运行时会有一个错误的行为。<br>  当构造方法含有多个可选参数时，另一种解决方案是JavaBeans模式，在这种模式中，你会调用一个无参构造方法来创建对象，然后调用setter方法设置每一个必要参数值和每一个你想设置的可选参数值：</p>
+<pre><code>//JavaBeans Pattern - allows inconsistency, mandates mutability
+public class NutritionFacts&#123;
+    Parameters initialized to default values (if any)
+    private int servingSize = -1; //Required, no default value
+    private int serving = -1;     //Required, no default value
+    private int calories = 0;
+    private int fat = 0;
+    private int sodium = 0;
+    private int carbohydrate = 0;
+
+    public NutritionFacts()&#123;&#125;
+
+    //Setters
+    public void setServingSize(int val) &#123; servingSize = val;&#125;
+    public void setServing(int val) &#123;serving = val;&#125;
+    public void setCalories (int val) &#123; calories = val;&#125;
+    public void setFat (int val) &#123;fat = val;&#125;
+    public void setSodium (int val) &#123;sodium = val;&#125;
+    public void setCarbohydrate(int val) &#123;carbohydrate = val;&#125;
+&#125;
+</code></pre>
+<p>这种模式没有重写构造方法模式的缺点。它将很容易的创建实例，并且很容易阅读结果代码：</p>
+<pre><code>NutritionFacts cocaCola = new NutritionFacts();
+cocaCola.setServingSize(240);
+cocaCola.setServings(8);
+cocaCola.setCalories(100);
+cocaCola.setSodium(100);
+cocaCola.setCarbohydrate(27);
+</code></pre>
+<p>  不幸的是，JavaBeans模式自身有严重的缺陷。由于构造方法被多次调用，JavaBean可能在构造的途中处于不一致的状态。仅仅通过检查构造参数的有效性无法保证JavaBean的一致性。试图使用处于不一致状态的对象会导致难以察觉的Bug，这种bug极难调试。JavaBeans模式的一个相关缺点是排除了类不一致的可能性（Item17）并且需要程序员的额外努力来确保线程安全。<br>  通过手工“冻结”对象的方式，在它完成构建以前不允许使用，直到解冻有可能减少以上的缺点，但是在实践中很少使用。跟多的是，它将会在运行时导致错误因为编译器不能确保程序员在使用对象前调用了冻结方法。<br>  幸运的是，有第三种选择结合了重写构造方法模式的安全性和JavaBeans模式的可读性。那就是构建者模式【Gamma95】。作为直接创建期望对象的替代，客户端使用所有构造参数调用构造方法（或者静态工厂）并且创建一个构建者对象。然后客户端对构建者对象调用想setter一样的方法，设置可选参数的值。最后客户端调用一个无参build方法来生成一个不可变的对象。构建者通常是它所创建类的静态成员类（Item24）。如下是它在实践中的表现：</p>
+<pre><code>//Builder Pattern
+public class NutritionFacts&#123;
+    private final int servingSize;
+    private final int servings;
+    private final int calories;
+    private final int fat;
+    private final int sodium;
+    private final int carbohydrate;
+
+    public static class Builder&#123;
+        //Required Parameters
+        private final int servingSize;
+        private final int servings;
+
+        //Optional Parameters - initialized to default values
+        private int calories     = 0;
+        private int fat          = 0;
+        private int sodium       = 0;
+        private int carbohydrate = 0;
+
+        public Builder(int servingSize, int serving)&#123;
+            this.servingSize = servingSize;
+            this.servings = servings;
+        &#125;
+
+        public Builder calories(int val)&#123;
+            colaries = val;
+            return this;
+        &#125;
+
+        public Builder fat(int val)&#123;
+            fat = val;
+            return this;
+        &#125;
+
+        public Builder sodium(int val)&#123;
+            sodium = val;
+            return this;
+        &#125;
+
+        public Builder carbohydrate(int val)&#123;
+            carbohydrate = val;
+            return this;
+        &#125;
+
+        public NutritionFacts build（）&#123;
+            return new NutritionFacts(this);
+        &#125;
+    &#125;
+
+    private NutritionFacts(Builder builder)&#123;
+        servingSize = builder.servingSize;
+        servings = builder.servings;
+        calories = builder.calories;
+        fat = builder.fat;
+        sodium = builder.sodium;
+        carbohydrate = builder.carbohydrate;
+    &#125;
+&#125;
+</code></pre>
+<p>  NutritionFacts类是不可变的，且所有参数的默认值都在一个地方。构建器的setter方法返回构建器本身，以至于可以链式调用，形成一种流式API。以下是客户端的示例代码：</p>
+<pre><code>NutritionFacts cocaCola = new NutritionFact.Builder(240, 8).colaries(100).sodium(35).carbohydrate(7).build();
+</code></pre>
+<p>客户端代码很容易编写，更重要的是很容易阅读。构建器模式模拟了Python和Scala中的具名可选参数。<br>  为了简洁起见，这里省略了有效性检查。为了尽快检测出无效参数，请在构建器的构造方法与方法中检查参数的有效性。不变性检查涉及到由build方法所调用的构造方法中的多个参数<strong>为了确保这些不变参数真正能够做到不变，请在从构建器中复制完参数以后就对对象字段进行检查（Item 50）。如果检查失败，抛出IllgalArgumentException(Item 72),异常详情指明哪个参数是无效的（Item 75）。<br>  构建器模式非常适合类的继承。 使用平行的构建器层次体系，每个都嵌套在相应的类中。抽象类有抽象构建器；具体类有具体构建器。比如说，考虑如下这个抽象类，它是层次体系的根，代表各种类型的披萨。</strong>：</p>
+<pre><code>//Builder pattern for class hierarchies
+public abstract calss Pizza&#123;
+    public enum Topping &#123;HAM, MUSHROOM, ONION, PEPPER,SAUSAGE&#125;
+    final Set&lt;Topping&gt; toppings;
+
+    abstract static class Builder&lt;T extends Builder&lt;T&gt;&gt;&#123;
+        EnumSet&lt;Topping&gt; toppings = EnumSet.noneOf(Topping.class);
+        public T addTopping(Topping topping)&#123;
+            toppings.add(Objects.requireNonNull(topping));
+            return self();
+        &#125;
+
+        abstract Pizza build();
+
+    //Subclasses must override this method to return &quot;this&quot; 
+        **protected abstract T self();**
+    &#125;
+    Pizza(Builder&lt;?&gt; builder)&#123;
+        toppings = builder.toppings.clone();// See Item 50
+    &#125;
+&#125;
+</code></pre>
+<p>  注意到Pizza.Builder是一个泛型，拥有递归的类型参数（Item 30）。通过该参数以及抽象的self方法可以让方法在子类中恰当的链接起来。而不需要进行类型转换。这种对于Java缺乏自我类型问题的解决方案叫做模拟的自我类型。<br>  如下是两个具体的Pizza子类，一个代表了标准的纽约风格披萨，另一个代表半圆形烤乳酪披萨。前者有一个必要的size参数，后者允许你指定将沙司放在里面还是外面：</p>
+<pre><code>public class NyPizza extends Pizza&#123;
+    public enum Size &#123;SMALL, MEDIUM, LARGE&#125;;
+    private final Size size;
+
+    public static class Builder extends Pizza.Builder&lt;Builder&gt;&#123;
+        private final Size size;
+
+        public Builder(Size size)&#123;
+            this.size = Objects.requireNonNull(size);
+        &#125;
+
+        @Override
+        public NyPizza build()&#123;
+            return new NyPizza(this);
+        &#125;
+
+        @Override
+        protected Builder self()&#123;
+            return this;
+        &#125;
+    &#125;
+
+    private NyPizza(Builder builder)&#123;
+        super(builder);
+        size = builder.size;
+    &#125;
+&#125;
+
+public class Calzone extends Pizza&#123;
+    private final boolean sauceInside;
+
+    public static class Builder extends Pizza.Builder&lt;Builder&gt;&#123;
+        private boolean sauceInside = false; // Default 
+
+        public Builder sauceInside()&#123;
+            sauceInside = true;
+            return this;
+        &#125;
+
+        @Override
+        public Calzone build()&#123;
+            return new Calzone(this);
+        &#125;
+
+        @Override
+        protected Builder self()&#123;
+            return this;
+        &#125;
+
+        private Calzone(Builder builder)&#123;
+            super(builder);
+            sauceInside = builder.sauceInside;
+        &#125;
+    &#125;
+
+&#125;
+</code></pre>
+<p>  注意到每一个子类的构建器中的build方法被声明成返回正确的子类：<code>NyPizza.Builder</code>的<code>build</code>方法返回<code>NyPizza</code>，<code>Calzone.Builder</code>的<code>build</code>方法返回<code>Calzone</code>。这种子类方法声明为返回父类方法所声明的返回类型的子类型技术叫做协变返回类型。客户端可以通过这项技术在不借助于类型转换的情况下使用这些构建器。<br>  这些「层级化构建器」的客户端代码实质上跟简单的<code>NutritionFacts</code>构建器的代码一样。出于简洁的目的，下面展示的示例代码假设已经静态导入了枚举常量。</p>
+<pre><code>NyPizza pizza = new NyPizza.Builder(SMALL).addTopping(SAUSAGE).addTopping(ONION).build();
+Calzone calzone = new Calzone.Builder().addTopping(HAM).sauceInside().build();
+</code></pre>
+<p>  相比于构造方法，构建器的微弱优势是它可以含有多个可变参数，因为每个参数都是在自己的方法中指定的。另外，构建器可以将传递给多个调用的参数聚合起来，并通过一个方法传给单个字段，就像前面<code>addTopping</code>方法展示的一样。<br>  构建器模式是十分灵活的。单个构建器可以被用来重复的构建多个对象。可以在<code>build</code>方法相互调用之间调整构建器的参数，来改变创建的对象。构建器可以在创建对象时自动填充一些字段，例如每次创建对象时递增的序列号。<br>  构建起模式也有缺点。为了创建对象，你必须首先创建它的构建器。尽管创建构建器的花销在实际中可以忽略，在性能关键的时候它将成为一个问题。此为，构建起模式比重叠的构造方法模式更冗长，这样只有在参数数量足够多的情况下使用构建器模式才是值得的，比如说4个以上的参数。不过请记住，你将会在未来添加更多的参数。但是如果一开始使用构造方法或者静态工厂，在类的参数变的很多的时候，切换到构建器，那么显而易见，会遗留很多废弃的构造方法或者静态工厂。因此，更好的方式通常是以构建器开始。<br>  总的来说，在设计类时，如果其构造方法或静态工厂有很多参数，构建器模式是一个很好的选择， 特别是如果这些参数是可选的或者同类型的。相比于重叠的构造方法来说，构建器的客户端代码将会很容易读写，而且比JavaBeans更加安全。</p>
+
+            </div>
+
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Effective-Java-3rd/">#Effective Java 3rd</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                               rel="prev"
+                               href="/2019/01/11/%E5%BC%BA%E5%88%B6%E5%AF%B9%E5%8D%95%E4%BE%8B%E5%B1%9E%E6%80%A7%E4%BD%BF%E7%94%A8%E7%A7%81%E6%9C%89%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%E5%92%8C%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B/"
+                            >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                                <span class="title flex-center">
+                                <span class="post-nav-title-item">Item-3 强制对单例属性使用私有构造方法和枚举类型</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                               rel="next"
+                               href="/2018/12/29/%E8%80%83%E8%99%91%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E4%BB%A3%E6%9B%BF%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95/"
+                            >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">Item-1 考虑使用静态工厂方法代替构造方法</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                                <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            
+<footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>2018</span> -
+            
+            2023
+            
+                &nbsp;<i class="fas fa-heart icon-animate"></i>
+                &nbsp;<a href="/">Doggie</a>
+            
+        </div>
+        
+            <script async data-pjax
+                    src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    Visitor Count&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                
+                
+                    Totalview&nbsp;<span id="busuanzi_value_site_pv"></span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.6.1</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/local-search.js"></script>
+
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/toc.js"></script>
+        
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

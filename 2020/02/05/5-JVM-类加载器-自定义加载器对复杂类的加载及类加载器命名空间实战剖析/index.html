@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Doggie">
+    
+    <title>
+        
+            5_JVM_类加载器_自定义加载器对复杂类的加载及类加载器命名空间实战剖析 |
+        
+        Keep Moving
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/brands.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en","path":"search.json"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/logo.svg","favicon":"/images/logo.svg","avatar":"/images/avatar.svg","font_size":null,"font_family":"STSong, STHeiti","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":false,"background_img":"/images/bg.svg","description":"请在这里输入你想对全世界每个人要说的话...","font_color":null,"hitokoto":true},"scroll":{"progress_bar":false,"percent":true}},"local_search":{"enable":true,"preload":true},"code_copy":{},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":false},"comment":{"enable":false,"use":"valine","valine":{"appid":"uV1DqTVgOHpeh50rftSyg4NR-gzGzoHsz","appkey":"0FhpBTmkC3B0LaUFCRJrlk0H","server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"version":"3.6.1"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original article title","author":"Original article author","link":"Original article link"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.svg">
+                </a>
+            
+            <a class="logo-title" href="/">
+               Keep Moving
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            <div class="article-title">
+                <span class="title-hover-animation">5_JVM_类加载器_自定义加载器对复杂类的加载及类加载器命名空间实战剖析</span>
+            </div>
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/avatar.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Doggie</span>
+                            
+                                <span class="author-label">Lv4</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            
+<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        
+            <i class="fa-regular fa-calendar-plus"></i>&nbsp;
+        
+        <span class="pc">2020-02-05 15:41:12</span>
+        <span class="mobile">2020-02-05 15:41</span>
+    </span>
+    
+        <span class="article-update-date article-meta-item">
+        <i class="fas fa-file-pen"></i>&nbsp;
+        <span class="pc">2023-02-06 15:48:38</span>
+    </span>
+    
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/JVM/">JVM</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>1.6k Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>7 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content keep-markdown-body">
+                
+
+                <h1 id="自定义加载器对复杂类的加载"><a href="#自定义加载器对复杂类的加载" class="headerlink" title="自定义加载器对复杂类的加载"></a>自定义加载器对复杂类的加载</h1><p>示例1</p>
+<pre><code>/**
+* 创建MyCat类
+*/
+public class MyCat &#123;
+    public MyCat() &#123;
+        System.out.println(&quot;MyCat is loaded by: &quot; + this.getClass().getClassLoader());
+    &#125;
+&#125;
+/**
+* 创建MySample类
+*/
+public class MySample &#123;
+    public MySample() &#123;
+        System.out.println(&quot;MySample is loaded by: &quot; + this.getClass().getClassLoader());
+        new MyCat();
+    &#125;
+&#125;
+
+/**
+* 创建测试类，使用之前写的自定义加载器MyClassLoader加载MySample类，
+* 然后创建MySample类实例
+*/
+public class MyTest17 &#123;
+    public static void main(String[] args) throws Exception&#123;
+        MyClassLoader loader1 = new MyClassLoader(&quot;loader1&quot;);
+        Class&lt;?&gt; clazz =loader1.loadClass(&quot;com.shengsiyuan.jvm.classloader.MySample&quot;);
+
+        System.out.println(&quot;class: &quot; + clazz.hashCode());
+        Object object = clazz.newInstance();
+    &#125;
+&#125;
+</code></pre>
+<p>运行结果：</p>
+<pre><code>class: 312714112
+MySample is loaded by: sun.misc.Launcher$AppClassLoader@330bedb4
+MyCat is loaded by: sun.misc.Launcher$AppClassLoader@330bedb4
+</code></pre>
+<p>这是因为loader1在加载MySample类时会先委托其父加载器进行加载，即系统类加载器对MySample进行加载。</p>
+<p>调整程序，将classpath下的<code>com/</code>目录移到其他地方，如<code>path=/Users/xuexiao/Downloads/classes/</code>，loader1设置加载路径为path，删除classpath下的MySample类</p>
+<pre><code>/**
+* 创建测试类，使用之前写的自定义加载器MyClassLoader加载MySample类，
+* 然后创建MySample类实例
+* MySample、MyCat类保持不变，loader1设置加载路径
+* 删除classpath下的MySample.class 
+*/
+public class MyTest17 &#123;
+    public static void main(String[] args) throws Exception&#123;
+        MyClassLoader loader1 = new MyClassLoader(&quot;loader1&quot;);
+        loader1.setPath(&quot;/Users/xuexiao/Downloads/classes/&quot;);
+        Class&lt;?&gt; clazz =loader1.loadClass(&quot;com.shengsiyuan.jvm.classloader.MySample&quot;);
+
+        System.out.println(&quot;class: &quot; + clazz.hashCode());
+        Object object = clazz.newInstance();
+    &#125;
+&#125;
+</code></pre>
+<p>运行结果：</p>
+<pre><code>class Name: com.shengsiyuan.jvm.classloader.MySample
+class loader Name: loader1
+class: 1554874502
+MySample is loaded by: com.shengsiyuan.jvm.classloader.MyClassLoader@12a3a380
+MyCat is loaded by: sun.misc.Launcher$AppClassLoader@330bedb4
+</code></pre>
+<p>前两行打印信息说明，自定义加载器中的<code>findClass</code>方法运行，<code>MySample</code>类由自定义类加载器loader1进行加载。<br>加载成功后，通过<code>newInstance()</code>方法调用<code>MySample</code>的构造方法创建<code>MySample</code>实例，在其构造方法内<code>new MyCat()</code>会造成对<code>MyCat</code>类的主动使用，因此会初始化<code>MyCat</code>类，初始化之前要先加载<code>MyCat</code>类。<br>这时实际加载<code>MyCat</code>类的类加载器应该是加载了MySample类的类加载器loader1，根据双亲委派模型，loader1会委托其父类加载器对<code>MyCat</code>进行加载，其父类加载器为系统类加载器，可以加载位于classpath下的<code>MyCat</code>，因此，出现最后一行的打印结果。</p>
+<p>若继续删除classpath下的<code>MyCat.class</code>，则<br>运行结果：</p>
+<pre><code>class Name: com.shengsiyuan.jvm.classloader.MySample
+class loader Name: loader1
+class: 1554874502
+MySample is loaded by: com.shengsiyuan.jvm.classloader.MyClassLoader@12a3a380
+class Name: com.shengsiyuan.jvm.classloader.MyCat
+class loader Name: loader1
+MyCat is loaded by: com.shengsiyuan.jvm.classloader.MyClassLoader@12a3a380
+</code></pre>
+<p>这是因为在加载<code>MySample</code>时，自定义加载器会先委托其父类加载器去加载，即由应用类加载器加载，应用类加载器继续委托其父类加载器，直到启动类加载器都不能加载<code>MySample.class</code>，自定义加载器loader1再去执行加载动作。<br>在初始化<code>MySample</code>实例时，调用<code>new MyCat();</code>导致要对MyCat进行初始化，所以要对其加载，而加载<code>MyCat</code>的类加载器应该也是loader1,它先会委托父类加载器加载，直到启动类加载器也不能加载后，再自己去加载。</p>
+<p>重新编译后，在classpath下只删除<code>MyCat.class</code>，运行结果：</p>
+<pre><code>class: 312714112
+MySample is loaded by: sun.misc.Launcher$AppClassLoader@330bedb4
+Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: com/shengsiyuan/jvm/classloader/MyCat
+    at com.shengsiyuan.jvm.classloader.MySample.&lt;init&gt;(MySample.java:14)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+    at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+    at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+    at java.lang.Class.newInstance(Class.java:442)
+    at com.shengsiyuan.jvm.classloader.MyTest17.main(MyTest17.java:17)
+Caused by: java.lang.ClassNotFoundException: com.shengsiyuan.jvm.classloader.MyCat
+    at java.net.URLClassLoader.findClass(URLClassLoader.java:381)
+    at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+    at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:338)
+    at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+    ... 7 more
+</code></pre>
+<p>运行结果可以看出，<code>MySample</code>由系统类加载器加载，在实例化过程中，调用<code>new MyCat();</code>时，系统类加载器去加载<code>MyCat</code>，但是classpath下没有<code>MyCat.class</code>，导致异常。</p>
+<p>继续变更，在MyCat类中添加<code>MySample</code>类的引用，这样两个类就是相互关联的关系了</p>
+<pre><code>public class MyCat &#123;
+
+    public MyCat() &#123;
+        System.out.println(&quot;MyCat is loaded by: &quot; + this.getClass().getClassLoader());
+        //添加MySample的引用
+        System.out.println(&quot;from MyCat: &quot; + MySample.class);
+    &#125;
+&#125;
+</code></pre>
+<p>重新编译后(classpath下不做删除操作)的运行结果：</p>
+<pre><code>class: 312714112
+MySample is loaded by: sun.misc.Launcher$AppClassLoader@330bedb4
+MyCat is loaded by: sun.misc.Launcher$AppClassLoader@330bedb4
+from MyCat: class com.shengsiyuan.jvm.classloader.MySample
+</code></pre>
+<p>此时两个类实际都由系统类加载器正常加载。</p>
+<p>若删除classpath下的<code>MySample</code>类，运行结果是:</p>
+<pre><code>class Name: com.shengsiyuan.jvm.classloader.MySample
+class loader Name: loader1
+class: 1554874502
+MySample is loaded by: com.shengsiyuan.jvm.classloader.MyClassLoader@12a3a380
+MyCat is loaded by: sun.misc.Launcher$AppClassLoader@330bedb4
+Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: com/shengsiyuan/jvm/classloader/MySample
+    at com.shengsiyuan.jvm.classloader.MyCat.&lt;init&gt;(MyCat.java:15)
+    at com.shengsiyuan.jvm.classloader.MySample.&lt;init&gt;(MySample.java:14)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+    at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+    at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+    at java.lang.Class.newInstance(Class.java:442)
+    at com.shengsiyuan.jvm.classloader.MyTest17.main(MyTest17.java:17)
+Caused by: java.lang.ClassNotFoundException: com.shengsiyuan.jvm.classloader.MySample
+    at java.net.URLClassLoader.findClass(URLClassLoader.java:381)
+    at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+    at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:338)
+    at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+    ... 8 more
+</code></pre>
+<p>此时<code>MySample</code>实际由自定义加载器loader1加载，<code>MyCat</code>实际由系统类加载器加载，在<code>MyCat</code>类实例化时，要对<code>MySample</code>进行引用，因为类加载器的命名空间问题，父类加载器所加载的类无法访问子类加载器所加载的类，导致找不到<code>MySample</code></p>
+<p>若修改<code>MySample</code>类，和<code>MyCat</code>类，只删除classpath下的<code>MySample</code>.class</p>
+<pre><code>public class MySample &#123;
+    public MySample() &#123;
+        System.out.println(&quot;MySample is loaded by: &quot; + this.getClass().getClassLoader());
+
+        new MyCat();
+        //MyCat引用
+        System.out.println(&quot;from MySample: &quot; + MyCat.class);
+    &#125;
+&#125;
+
+public class MyCat &#123;
+
+    public MyCat() &#123;
+        System.out.println(&quot;MyCat is loaded by: &quot; + this.getClass().getClassLoader());
+    &#125;
+&#125;
+</code></pre>
+<p>运行结果是：</p>
+<pre><code>class Name: com.shengsiyuan.jvm.classloader.MySample
+class loader Name: loader1
+class: 1554874502
+MySample is loaded by: com.shengsiyuan.jvm.classloader.MyClassLoader@12a3a380
+MyCat is loaded by: sun.misc.Launcher$AppClassLoader@330bedb4
+</code></pre>
+<p>此时，<code>MySample.class</code>由自定义加载器加载，<code>MyCat.class</code>由父类加载器（应用加载器）加载，根据命名空间的规则，子加载器所加载的类能够访问父加载器所加载的类。</p>
+<p>结论如下：</p>
+<ul>
+<li>若一个类A中有对类B的引用，则B的class对象由加载A的加载器加载，并遵循双亲委派模型；</li>
+<li>父加载器所加载的类无法访问子加载器所加载的类；</li>
+<li>子加载器所加载的类能够访问父加载器所加载的类。</li>
+</ul>
+
+            </div>
+
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/JVM/">#JVM</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                               rel="prev"
+                               href="/2022/02/17/Nginx-OpenResty%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/"
+                            >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                                <span class="title flex-center">
+                                <span class="post-nav-title-item">Nginx/OpenResty理论基础</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                               rel="next"
+                               href="/2020/02/02/4-JVM-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8-ClassLoader%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E4%BE%8B%E5%89%96%E6%9E%90/"
+                            >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">4_JVM_类加载器_ClassLoader源码分析与实例剖析</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                                <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%AF%B9%E5%A4%8D%E6%9D%82%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD"><span class="nav-number">1.</span> <span class="nav-text">自定义加载器对复杂类的加载</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            
+<footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>2018</span> -
+            
+            2023
+            
+                &nbsp;<i class="fas fa-heart icon-animate"></i>
+                &nbsp;<a href="/">Doggie</a>
+            
+        </div>
+        
+            <script async data-pjax
+                    src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    Visitor Count&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                
+                
+                    Totalview&nbsp;<span id="busuanzi_value_site_pv"></span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.6.1</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/local-search.js"></script>
+
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/toc.js"></script>
+        
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

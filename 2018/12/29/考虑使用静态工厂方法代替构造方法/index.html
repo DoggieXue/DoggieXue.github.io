@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Doggie">
+    
+    <title>
+        
+            Item-1 考虑使用静态工厂方法代替构造方法 |
+        
+        Keep Moving
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/font/css/brands.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en","path":"search.json"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":"/images/logo.svg","favicon":"/images/logo.svg","avatar":"/images/avatar.svg","font_size":null,"font_family":"STSong, STHeiti","hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"header_transparent":false,"background_img":"/images/bg.svg","description":"请在这里输入你想对全世界每个人要说的话...","font_color":null,"hitokoto":true},"scroll":{"progress_bar":false,"percent":true}},"local_search":{"enable":true,"preload":true},"code_copy":{},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":false},"comment":{"enable":false,"use":"valine","valine":{"appid":"uV1DqTVgOHpeh50rftSyg4NR-gzGzoHsz","appkey":"0FhpBTmkC3B0LaUFCRJrlk0H","server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"left","copyright_info":false},"version":"3.6.1"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original article title","author":"Original article author","link":"Original article link"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.svg">
+                </a>
+            
+            <a class="logo-title" href="/">
+               Keep Moving
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            <div class="article-title">
+                <span class="title-hover-animation">Item-1 考虑使用静态工厂方法代替构造方法</span>
+            </div>
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/avatar.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Doggie</span>
+                            
+                                <span class="author-label">Lv4</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            
+<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        
+            <i class="fa-regular fa-calendar-plus"></i>&nbsp;
+        
+        <span class="pc">2018-12-29 16:55:01</span>
+        <span class="mobile">2018-12-29 16:55</span>
+    </span>
+    
+        <span class="article-update-date article-meta-item">
+        <i class="fas fa-file-pen"></i>&nbsp;
+        <span class="pc">2023-02-07 11:07:33</span>
+    </span>
+    
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Effective-Java-3rd/">Effective Java 3rd</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>3k Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>10 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content keep-markdown-body">
+                
+
+                <p>允许客户端获取一个类实例的传统方式是提供一个公共的构造方法。现在有另一种技术，应该成为每一个程序员工具箱中的一部分。类可以提供一个公有的静态工厂方法，这个简单的静态方法返回这个类的实例。下面是一个关于Boolean（原生数据类型boolean的包装类）的简单示例。这个方法将boolean原生值转换为Boolean对象引用。</p>
+<pre><code>public static Boolean valueOf(boolean b)&#123;
+    return b ? Boolean.TRUE : Boolean.FALSE;
+&#125;
+</code></pre>
+<p>请注意，上面这个静态工厂方法与设计模式[Gamma95]中的工厂方法模式并不一样。本条款所介绍的静态工厂方法在设计模式一书中并没有直接的等价物。<br>  除了共有构造方法外，类还可以向其客户端提供静态工厂方法。相比于共有构造方法来说，提供静态工厂方法有利也有弊。<br>  静态工厂方法的一个好处在于，相比于构造方法来说，他们拥有名字。如果构造方法的参数本身没有描述出将要返回的对象，那么拥有恰当名字的静态工厂将会更加易于使用，所生成的客户端代码的可读性也更好。例如构造方法<code>BigInteger(int, int, Random)</code>,它返回一个可能为质数的<code>BigInteger</code>，而更好的表达方式是使用名为<code>BigInteger.probablePrime</code>的静态工厂方法（该方法在Java 4中被加入进来的）。<br>  一个类只能有一个给定签名的构造方法。程序设计者已经知道如何绕过这个限制，通过两个参数列表顺序和类型不同的构造方法。这真的是一个糟糕的想法。这些API的使用者将永远分不清哪一个构造方法最终陷入到调用错误的构造方法的困窘。用户阅读使用了这些构造方法的代码时，如果不查看相关文档说明，将不会知道这些代码做了什么。<br>  静态工厂方法因为有名字，不存在上一段落中讨论的限制。当一个类需要拥有多个同名的构造方法时，使用静态工厂方法来代替构造方法，并谨慎的选择名字来区分他们的不同。<br>  静态工厂方法的第二个优势是不像构造方法那样：每次调用时都会创建一个新的对象。这样允许不可变的类使用预构造实例，或是在构造时将其缓存起来，从而避免了创建不必要的重复对象的情况。<code>Boolena.valueOf(boolean )</code>方法阐明了这个技巧：它永远不会创建一个对象。这个技巧类似于享元模式(Flyweight pattern) 。如果经常需要请求同样的对象，那么这种做法将会极大改进性能，特别是在创建成本很高的情况下更是如此。<br>  静态工厂方法可以再重复调用的情况下返回同一个对象的能力使得类可以在任何时候都能严格控制哪些实例可以存在。这样的类被称为实例控制。有下面几个原因需要创建实例控制类：实例控制保证一个类是单例的或是不可实例化的，此外它让值不可变的类保证不会有两个相同的实例存在，如：<code>a.equal(b)为true</code>，当且仅当<code>a==b</code>的时候才成立。这是享元模式的基础，枚举类型来提供保证。<br>  静态工厂方法的第三个优势是不像构造方法那样：可以返回所声明的返回类型的任何子类型对象。这个优势在选择返回对象类型时具有你极大灵活性。<br>  这种灵活性的一个应用场景就是API能够在无需将类声明为共有的情况下就可以返回对象。这种隐藏实现类的形式会导致一个非常简洁的API。这个技巧被用于基于接口的框架中，其中接口就为静态工厂方法提供了自然而然的返回类型。<br>  在Java 8以前，接口是没有静态方法的。根据约定，名为<code>Type</code>的接口的静态工厂方法要定义在名为Types的不可实例化的伴生类中。例如Java的集合框架有45个实用的接口实现，这些实现提供了不可变的集合，同步的集合等等。几乎所有的实现通过一个不可实例化的类（<code>java.util.Collectios</code>）中的静态工厂方法公开的。所返回对象的类型都是非共有的。<br>  集合框架API要比它本来的样子小很多，它公开了45个独立的共有类，每个类都针对于一个便捷的实现。这并不仅仅只是API的数量少了，更为重要的是概念上的数量少了：程序员使用API所需掌握的概念的数量和难度都降低了。程序员知道所返回的对象是由其接口API所精确描述的，因此无需再去阅读实现类的文档了。此外，使用这种静态工厂方法要求客户端引用接口而非实现类所返回的对象，这通常来说是一个很好的实践<br>  Java8中，接口不能包含静态方法的限制被废除，因此没有理由为接口提供一个不可实例化的伴生类。大量应该定义在这种类中的公有静态成员现在应该被定义在接口中。不过，值得注意的是，我们还是需要将这些静态方法的实现代码放到单独的包级别的私有类中。这是因为Java 8要求接口的所有静态成员都必须是共有的。Java9中允许私有静态方法，但是静态字段和静态成员类仍然需要被定义成共有的。<br>  静态工厂方法的第四个优势是，作为输入参数的函数，返回对象所属的类会随着调用的不同而不同。所声明的返回类型的任何子类型都是允许的。返回对象所属的类也会随着调用的不同而不同。<br>  EnumSet类（Item36）没有公共构造方法，只有静态工厂。在OpenJDK的实现中，根据底层枚举类型的大小返回一到两个子类实例：如果底层有64或者更少的元素，静态工厂会返回一个基于单个long类型的<code>RegularEnumSet</code>实例，如果底层枚举类型有65个以上的元素，静态工厂会返回一个基于long数组的JumboEnumSet实例。<br>  这两个类的实现对客户端来说是不可见的。如果<code>RegularEnumSet</code>不在为小的枚举类型提供性能优势，它将在未来的某个版本中废除而不会产生任何影响。与之类似，如果经过验证能够提供更好的性能，那么未来的版本中就可以增加第三种或者第四种<code>EnumSet</code>实现。客户端既不知晓，也不关心他们从工厂中所得到的对象的真正类型是什么；他们只关心所得到的是<code>EnumSet</code>的某个子类。<br>  静态工厂方法的第五个优点是，当使用包含了方法的类时，返回对象类不需要事先存在如此灵活的静态工厂方法形成了服务提供者框架的基础，比如Java DataBase Connectivity API（JDBC）。服务提供者框架是这样一钟系统，提供者实现了某个服务，系统将其实现公开给客户端，从而实现了客户端与实现之间的解耦。<br>  一个服务提供者框架中有三个基本组件：一个服务接口，表示一个实现；一个提供者注册API，用于提供者注册具体实现；一个服务访问API，用于客户端获取服务实例。服务访问API允许客户端指定实现标准。如果没有指定标准，API返回默认实现实例，或者允许客户端遍历所有实现。服务访问API是灵活的静态工厂，构成了服务调用框架的基础。<br>  服务提供者框架第四个可选组件是服务提供者接口，它描述了用于生产服务接口实例的工厂对象。如果服务提供者接口不存在，那么实现就必须要通过反射的方式来实例化（Item65）。在JDBC的例子中，<code>Connection</code>扮演了服务接口的角色，<code>DriverManager.registerDriver</code>是提供者注册API，<code>DriverManager.getConnection</code>是服务访问API，Driver是服务提供者接口。<br>  服务提供者框架有许多变种。例如，服务访问API可以给客户端返回比提供者提供的服务更丰富的服务接口。这就是桥接模式。依赖注入框架可被视为一种强大的的服务提供者。从Java 6 开始，平台包含了一个通用的的服务提供者框架，<code>java.util.ServiceLoader</code>，所以，你不需要也不应该编写自己的(服务提供接口)（Item59）。JDBC不使用<code>ServiceLoader</code>，因为前者早于后者。<br>  只提供静态工厂方法的主要限制是没有public或者protected构造方法的类无法子类化。比如说，我们无法子类化集合框架中的任何便捷实现类。另一方面，这么做会鼓励程序员们使用组合而非继承，并且这对于不变类型来说也是需要的。<br>  静态工厂方法的第二个短板是他们不易于被程序员发现。他们并不想构造方法那样在API文档中有清楚的说明，这样对于既提供静态工厂方法，有提供构造方法的类来说，我们就很难知晓到底该用那种方式来实例化它。Javadoc工具也许某一天会重视静态工厂方法。在此期间，你可以通过关注类或者接口文档中的静态工厂并且遵守常见的命名约定来减少此问题。这里有一些静态工厂方法的常用名字。这份清单远非详尽无疑：</p>
+<ul>
+<li><p><code>from</code>–类型转换方法，接收一个参数，返回一个该类型对象的实例，例如：</p>
+<p>  Date d &#x3D; Date.from(instant);</p>
+</li>
+<li><p><code>of</code>–聚合方法，接收多个参数，返回合并后的该类的实例，例如： </p>
+<p>  Set<Rank> faceCards &#x3D; EnumSet.of(JACK, QUEEN, KING);</p>
+</li>
+<li><p><code>valueOf</code>–from和of的更为冗长的替代方案。例如：</p>
+<p>  BigInteger prime &#x3D; BigInteger.valueOf(Integer.MAX_VALUE);</p>
+</li>
+<li><p><code>instance</code> or <code>getInstance</code>–返回参数（如果有的话）所描述的实例，但是不能说他们能有相同的值，例如：</p>
+<p>  StackWalker luke &#x3D; StackWalker.getInstance(options);</p>
+</li>
+<li><p><code>create</code> or <code>newInstance</code>–类似于instance或者getInstance，只不过该方法保证每次调用返回一个新的实例，例如：</p>
+<p>  Object newArray &#x3D; Array.newInstance(classObject, arrayLen);</p>
+</li>
+<li><p><code>getType</code>–类似getInstance，工厂方法在不同类中时使用。Type是工厂方法返回对象的类型，例如：</p>
+<p>  FileStore fs &#x3D; Files.getFileStore(path);</p>
+</li>
+<li><p><code>newType</code>–类似newInstance，工厂方法在不同类中时使用。Type是工厂方法返回对象的类型，例如：</p>
+<p>  BufferedReader br &#x3D; Files.newBufferedReader(path);</p>
+</li>
+<li><p><code>type</code>–<code>getType</code>和<code>newType</code>简洁替代方案，例如：</p>
+<p>  List<Complaint> litany &#x3D; Collections.list(legacyLitany);</p>
+</li>
+</ul>
+<p>  总之，静态工厂方法和公共构造方法都有各自的适用场景，我们需要理解他们各自的优点。通常，静态工厂是优先选择的，这样可以避免习惯性的在没有考虑静态工厂的情况下就提供共有构造方法的情况发生。</p>
+
+            </div>
+
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Effective-Java-3rd/">#Effective Java 3rd</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                               rel="prev"
+                               href="/2019/01/10/%E5%BD%93%E9%9D%A2%E5%AF%B9%E5%BE%88%E5%A4%9A%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%E5%8F%82%E6%95%B0%E6%97%B6%EF%BC%8C%E8%AF%B7%E8%80%83%E8%99%91%E4%BD%BF%E7%94%A8%E6%9E%84%E5%BB%BA%E5%99%A8/"
+                            >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                                <span class="title flex-center">
+                                <span class="post-nav-title-item">Item-2 当面对很多构造方法参数时，请考虑使用构建器</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                               rel="next"
+                               href="/2018/04/18/Nginx%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/"
+                            >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">Nginx常用指令使用总结</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                                <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            
+<footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>2018</span> -
+            
+            2023
+            
+                &nbsp;<i class="fas fa-heart icon-animate"></i>
+                &nbsp;<a href="/">Doggie</a>
+            
+        </div>
+        
+            <script async data-pjax
+                    src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    Visitor Count&nbsp;<span id="busuanzi_value_site_uv"></span>&ensp;
+                
+                
+                    Totalview&nbsp;<span id="busuanzi_value_site_pv"></span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.6.1</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/local-search.js"></script>
+
+
+
+
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/toc.js"></script>
+        
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.6.1/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>
